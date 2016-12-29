@@ -18,33 +18,35 @@ import org.trinity.biblediary.process.controller.base.IWechatProcessController;
 import org.trinity.common.exception.IException;
 
 public class SignatureFilter extends OncePerRequestFilter {
-    @Autowired
-    private IWechatProcessController wechatProcessController;
+	@Autowired
+	private IWechatProcessController wechatProcessController;
 
-    @Autowired
-    private IUserProcessController userProcessController;
+	@Autowired
+	private IUserProcessController userProcessController;
 
-    @Override
-    protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain)
-            throws ServletException, IOException {
-        final String signature = request.getParameter("signature");
-        final String timestamp = request.getParameter("timestamp");
-        final String nonce = request.getParameter("nonce");
-        final String openid = request.getParameter("openid");
+	@Override
+	protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain)
+			throws ServletException, IOException {
+		final String signature = request.getParameter("signature");
+		final String timestamp = request.getParameter("timestamp");
+		final String nonce = request.getParameter("nonce");
+		final String openid = request.getParameter("openid");
 
-        try {
-            if (openid != null) {
-                wechatProcessController.verify(signature, timestamp, nonce);
-
-                final UserDto user = userProcessController.getWechatUser(openid);
-
-                SecurityContextHolder.getContext()
-                        .setAuthentication(new UsernamePasswordAuthenticationToken(user, user, Collections.emptyList()));
-            }
-
-            filterChain.doFilter(request, response);
-        } catch (final IException e) {
-            throw new ServletException();
-        }
-    }
+		try {
+			if (signature != null) {
+				wechatProcessController.verify(signature, timestamp, nonce);
+				UserDto user;
+				if (openid != null) {
+					user = userProcessController.getWechatUser(openid);
+				} else {
+					user = new UserDto();
+				}
+				SecurityContextHolder.getContext()
+						.setAuthentication(new UsernamePasswordAuthenticationToken(user, user, Collections.emptyList()));
+			}
+			filterChain.doFilter(request, response);
+		} catch (final IException e) {
+			throw new ServletException();
+		}
+	}
 }

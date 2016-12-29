@@ -7,7 +7,9 @@ public enum SystemAttributeKey implements ILookupMessage<LookupType> {
     ACCESS_TOKEN_EXPIRE_TIME("ATK_EXPT", "19000101000000"),
     ACCESS_TOKEN("ATK", ""),
     APP_ID("APP_ID", ""),
-    APP_SEC("APP_SEC", "");
+    APP_SEC("APP_SEC", ""),
+    SERVER("SERVER", "http://server"),
+    BUTTON_CONFIG("BTN_CFG", "{}");
 
     private final String messageCode;
     private String defaultValue;
