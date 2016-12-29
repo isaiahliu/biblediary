@@ -1,0 +1,46 @@
+<link rel="stylesheet" href="/static/css/business/base/navigator.css"></link>
+
+<div class="navBar" ng-controller="navigatorController">
+	<div class="advertisement">
+		<img class="logo" src="/static/images/logo/yqyl.jpg" />
+		<div style="display: inline-block; height: 40px; margin-left: 100px;">
+			<img
+				style="position: absolute; padding: 5px; height: 40px; width: 40px;"
+				src="/static/images/logo/search.png" /> <input class="searchBox"
+				ng-model="name" placeholder="#label('INPUT_KEY_WORDS')" /><button class="searchButton" ng-click="search()"><span
+				style="line-height: 40px;">#button("SEARCH")</span></button>
+			<button class="publishButton" ng-click="publish()">#button("PUBLISH_SERVICE")</button>
+		</div>
+		<img class="advertisement" src="/static/images/logo/advertisement.jpg" />
+	</div>
+	<div class="navBarItems">
+		<ul>
+			<li class="selectedNavBarItem"><a href="/service">
+				<div>
+					<span>#button("ONLINE_SERVICE")</span>
+				</div></a>
+			</li>
+			<li class="navBarItem"><a href="/home"><div>
+						<span>#button("HOME")</span>
+					</div></a></li>
+			<li class="navBarItem"><a href="javascript:void(0)"><div>
+						<span>#button("HOME_ENDOWMENT")</span>
+					</div></a></li>
+			<li class="navBarItem"><a href="javascript:void(0)"><div>
+						<span>#button("NURSING_FACILITY")</span>
+					</div></a></li>
+			<li class="navBarItem"><a href="javascript:void(0)"><div>
+						<span>#button("PENSION_REAL_ESTATE")</span>
+					</div></a></li>
+			<li class="navBarItem"><a href="javascript:void(0)"><div>
+						<span>#button("TOURISM_ENDOWMENT")</span>
+					</div></a></li>
+			<li class="navBarItem"><a href="javascript:void(0)"><div>
+						<span>#button("ENDOWMENT_FINANCE")</span>
+					</div></a></li>
+		</ul>
+	</div>
+
+</div>
+
+<script src="/static/js/business/base/navigator.js"></script>
