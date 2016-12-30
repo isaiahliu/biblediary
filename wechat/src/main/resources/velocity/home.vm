@@ -13,7 +13,7 @@
 			class="value" ng-model="newCellphone" />
 	</div>
 	<div style="margin: 10px 0" class="ng-hide" ng-show="message">
-		<span class="key">#label("CELLPHONE")</span> <input class="value" ng-model="newCellphone" />
+		<span>{{message}}</span>
 	</div>
 	<div>
 		<button ng-click="editing=true" ng-hide="editing">

@@ -12,7 +12,9 @@ span.key {
 	width: 80px;
 }
 
-input.value {
+input.value span.value {
+	display: inline-block;
 	width: 200px;
+	font-size: 22px;
 	line-height: 22px;
 }
