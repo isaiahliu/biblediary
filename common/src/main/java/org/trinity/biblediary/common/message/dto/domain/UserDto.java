@@ -16,6 +16,8 @@ public class UserDto extends AbstractBusinessDto {
 
     private PlanDto plan;
 
+    private String session;
+
     public LookupDto getAdmin() {
         return admin;
     }
@@ -34,6 +36,10 @@ public class UserDto extends AbstractBusinessDto {
 
     public PlanDto getPlan() {
         return plan;
+    }
+
+    public String getSession() {
+        return session;
     }
 
     public String getWechat() {
@@ -58,6 +64,10 @@ public class UserDto extends AbstractBusinessDto {
 
     public void setPlan(final PlanDto plan) {
         this.plan = plan;
+    }
+
+    public void setSession(final String session) {
+        this.session = session;
     }
 
     public void setWechat(final String wechat) {

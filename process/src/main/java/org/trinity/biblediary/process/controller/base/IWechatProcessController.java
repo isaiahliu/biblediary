@@ -6,11 +6,13 @@ import org.trinity.common.exception.IException;
 import org.trinity.process.controller.IProcessController;
 
 public interface IWechatProcessController extends IProcessController {
-	String getToken() throws IException;
+    void createMenu() throws IException;
 
-	WechatMessageResponse processMessage(WechatMessageRequest request) throws IException;
+    String getMenu() throws IException;
 
-	void refreshMenu() throws IException;
+    String getToken() throws IException;
 
-	void verify(String signature, String timestamp, String nonce) throws IException;
+    WechatMessageResponse processMessage(WechatMessageRequest request) throws IException;
+
+    void verify(String signature, String timestamp, String nonce) throws IException;
 }

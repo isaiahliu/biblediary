@@ -17,6 +17,8 @@ import org.trinity.message.LookupParser;
 import org.trinity.repository.repository.IJpaRepository;
 
 public interface IUserRepository extends IJpaRepository<User, UserSearchingDto> {
+    User findOneBySession(String session);
+
     User findOneByWechat(String wechat);
 
     @Override

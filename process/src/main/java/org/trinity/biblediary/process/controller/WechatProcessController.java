@@ -32,132 +32,152 @@ import org.trinity.message.exception.GeneralErrorMessage;
 
 @Service
 public class WechatProcessController implements IWechatProcessController {
-	private static Logger logger = LogManager.getLogger(WechatProcessController.class);
+    private static Logger logger = LogManager.getLogger(WechatProcessController.class);
 
-	@Autowired
-	private IExceptionFactory exceptionFactory;
+    @Autowired
+    private IExceptionFactory exceptionFactory;
 
-	@Autowired
-	private ISystemAttributeProcessController systemAttributeProcessController;
+    @Autowired
+    private ISystemAttributeProcessController systemAttributeProcessController;
 
-	@Override
-	public String getToken() throws IException {
-		final Date now = new Date();
+    @Override
+    public void createMenu() throws IException {
+        final String token = getToken();
 
-		final String expireTimeStr = systemAttributeProcessController.getValue(SystemAttributeKey.ACCESS_TOKEN_EXPIRE_TIME);
-		String token = null;
-		final DateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
-		try {
-			final Date expireTime = format.parse(expireTimeStr);
+        final String appid = systemAttributeProcessController.getValue(SystemAttributeKey.APP_ID);
+        final String server = systemAttributeProcessController.getValue(SystemAttributeKey.SERVER);
+        final String buttonConfig = systemAttributeProcessController.getValue(SystemAttributeKey.BUTTON_CONFIG);
 
-			if (now.before(expireTime)) {
-				token = systemAttributeProcessController.getValue(SystemAttributeKey.ACCESS_TOKEN);
-			}
-		} catch (final ParseException e) {
-		}
+        final HttpMessageConverter<String> converter = new StringHttpMessageConverter(Charset.forName("UTF-8"));
+        final List<HttpMessageConverter<?>> converters = new ArrayList<>();
+        converters.add(converter);
 
-		if (token == null) {
-			final String appId = systemAttributeProcessController.getValue(SystemAttributeKey.APP_ID);
-			final String appSec = systemAttributeProcessController.getValue(SystemAttributeKey.APP_SEC);
+        final RestTemplate restTemplate = new RestTemplate(converters);
 
-			final RestTemplate restTemplate = new RestTemplate();
-			final AccessTokenResponse response = restTemplate.getForEntity(
-					"https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + appId + "&secret=" + appSec,
-					AccessTokenResponse.class).getBody();
+        final String buttons = buttonConfig.replaceAll("@SERVER@", server).replaceAll("@APPID@", appid);
 
-			token = response.getAccessToken();
+        restTemplate.postForLocation("https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + token, buttons);
+    }
 
-			systemAttributeProcessController.setValue(SystemAttributeKey.ACCESS_TOKEN, token);
+    @Override
+    public String getMenu() throws IException {
+        final String token = getToken();
 
-			final Calendar calendar = Calendar.getInstance();
-			calendar.setTime(now);
-			calendar.add(Calendar.SECOND, response.getExpiresIn());
+        final HttpMessageConverter<String> converter = new StringHttpMessageConverter(Charset.forName("UTF-8"));
+        final List<HttpMessageConverter<?>> converters = new ArrayList<>();
+        converters.add(converter);
 
-			systemAttributeProcessController.setValue(SystemAttributeKey.ACCESS_TOKEN_EXPIRE_TIME, format.format(calendar.getTime()));
-		}
+        final RestTemplate restTemplate = new RestTemplate(converters);
 
-		return token;
-	}
+        return restTemplate.getForEntity("https://api.weixin.qq.com/cgi-bin/menu/get?access_token=" + token, String.class).getBody();
+    }
 
-	@Override
-	public WechatMessageResponse processMessage(final WechatMessageRequest request) throws IException {
-		final WechatMessageResponse response = new WechatMessageResponse(request.getToUserName(), request.getFromUserName());
-		switch (request.getMessageType()) {
-			case "event":
-				switch (request.getEvent()) {
-					case "CLICK":
-						switch (request.getEventKey()) {
-							case "KEY_PROGRESS":
-								response.setMessageType("text");
-								response.setContent("你应该重头读/:B-)");
-								break;
-							case "KEY_SIGNUP":
-								response.setMessageType("text");
-								response.setContent("真的?/:<@");
-								break;
-							default:
-								break;
-						}
-						break;
-					default:
-						break;
-				}
-				break;
-			case "text":
-				logger.debug(request.getContent());
-				response.setMessageType("text");
-				response.setContent("你说的啥?/::D");
+    @Override
+    public String getToken() throws IException {
+        final Date now = new Date();
 
-				break;
-			default:
+        final String expireTimeStr = systemAttributeProcessController.getValue(SystemAttributeKey.ACCESS_TOKEN_EXPIRE_TIME);
+        String token = null;
+        final DateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+        try {
+            final Date expireTime = format.parse(expireTimeStr);
 
-				break;
-		}
-		return response;
-	}
+            if (now.before(expireTime)) {
+                token = systemAttributeProcessController.getValue(SystemAttributeKey.ACCESS_TOKEN);
+            }
+        } catch (final ParseException e) {
+        }
 
-	@Override
-	public void refreshMenu() throws IException {
-		final String token = getToken();
+        if (token == null) {
+            final String appId = systemAttributeProcessController.getValue(SystemAttributeKey.APP_ID);
+            final String appSec = systemAttributeProcessController.getValue(SystemAttributeKey.APP_SEC);
 
-		final String server = systemAttributeProcessController.getValue(SystemAttributeKey.SERVER);
-		final String buttonConfig = systemAttributeProcessController.getValue(SystemAttributeKey.BUTTON_CONFIG);
+            final RestTemplate restTemplate = new RestTemplate();
+            final AccessTokenResponse response = restTemplate.getForEntity(
+                    "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + appId + "&secret=" + appSec,
+                    AccessTokenResponse.class).getBody();
 
-		final HttpMessageConverter<String> converter = new StringHttpMessageConverter(Charset.forName("UTF-8"));
-		final List<HttpMessageConverter<?>> converters = new ArrayList<>();
-		converters.add(converter);
+            token = response.getAccessToken();
 
-		final RestTemplate restTemplate = new RestTemplate(converters);
+            systemAttributeProcessController.setValue(SystemAttributeKey.ACCESS_TOKEN, token);
 
-		final String buttons = buttonConfig.replaceAll("@SERVER@", server);
+            final Calendar calendar = Calendar.getInstance();
+            calendar.setTime(now);
+            calendar.add(Calendar.SECOND, response.getExpiresIn());
 
-		restTemplate.postForLocation("https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + token, buttons);
-	}
+            systemAttributeProcessController.setValue(SystemAttributeKey.ACCESS_TOKEN_EXPIRE_TIME, format.format(calendar.getTime()));
+        }
 
-	@Override
-	public void verify(final String signature, final String timestamp, final String nonce) throws IException {
-		final String[] strs = { timestamp, nonce, systemAttributeProcessController.getValue(SystemAttributeKey.WECHAT_TOKEN) };
+        return token;
+    }
 
-		try {
-			final MessageDigest digest = MessageDigest.getInstance("SHA1");
+    @Override
+    public WechatMessageResponse processMessage(final WechatMessageRequest request) throws IException {
+        final WechatMessageResponse response = new WechatMessageResponse(request.getToUserName(), request.getFromUserName());
+        switch (request.getMessageType().toUpperCase()) {
+        case "EVENT":
+            switch (request.getEvent().toUpperCase()) {
+            case "CLICK":
+                switch (request.getEventKey().toUpperCase()) {
+                case "KEY_PROGRESS":
+                    response.setMessageType("text");
+                    response.setContent("你应该重头读/:B-)");
+                    break;
+                case "KEY_SIGNUP":
+                    response.setMessageType("text");
+                    response.setContent("真的?/:<@");
+                    break;
+                default:
+                    break;
+                }
+                break;
+            case "SUBSCRIBE":
+                response.setMessageType("text");
+                response.setContent("欢迎!");
+                break;
+            case "UNSUBSCRIBE":
+                break;
+            default:
+                break;
+            }
+            break;
+        case "TEXT":
+            logger.debug(request.getContent());
+            response.setMessageType("text");
+            response.setContent("你说的啥?/::D");
 
-			final String str = String.join("", Arrays.stream(strs).sorted().toArray(String[]::new));
+            break;
+        default:
 
-			final byte[] results = digest.digest(str.getBytes());
+            break;
+        }
+        return response;
+    }
 
-			final StringBuilder sig = new StringBuilder();
+    @Override
+    public void verify(final String signature, final String timestamp, final String nonce) throws IException {
+        final String[] strs = { timestamp, nonce, systemAttributeProcessController.getValue(SystemAttributeKey.WECHAT_TOKEN) };
 
-			for (final byte result : results) {
-				final int temp = Byte.toUnsignedInt(result);
-				sig.append(Integer.toString(temp >> 4, 16));
-				sig.append(Integer.toString(temp % 16, 16));
-			}
+        try {
+            final MessageDigest digest = MessageDigest.getInstance("SHA1");
 
-			if (!sig.toString().equals(signature)) {
-				throw exceptionFactory.createException(ErrorMessage.INCORRECT_SIGNATURE);
-			}
-		} catch (final NoSuchAlgorithmException e) {
-			throw exceptionFactory.createException(GeneralErrorMessage.UNKNOWN_EXCEPTION, e.getMessage());
-		}
-	}
+            final String str = String.join("", Arrays.stream(strs).sorted().toArray(String[]::new));
+
+            final byte[] results = digest.digest(str.getBytes());
+
+            final StringBuilder sig = new StringBuilder();
+
+            for (final byte result : results) {
+                final int temp = Byte.toUnsignedInt(result);
+                sig.append(Integer.toString(temp >> 4, 16));
+                sig.append(Integer.toString(temp % 16, 16));
+            }
+
+            if (!sig.toString().equals(signature)) {
+                throw exceptionFactory.createException(ErrorMessage.INCORRECT_SIGNATURE);
+            }
+        } catch (final NoSuchAlgorithmException e) {
+            throw exceptionFactory.createException(GeneralErrorMessage.UNKNOWN_EXCEPTION, e.getMessage());
+        }
+    }
 }

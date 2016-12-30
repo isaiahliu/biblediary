@@ -1,0 +1,33 @@
+<link rel="stylesheet" href="/static/css/business/home.css?random=$version"></link>
+#title("USER_INFO")
+<div class="home ng-hide" ng-show="user">
+	<div style="margin: 70px 0;">
+		<span>#info("USER_INFO")</span>
+	</div>
+	<div style="margin: 10px 0">
+		<span class="key" style="">#label("NAME")</span> <span ng-hide="editing" class="value">{{user.nickName}}</span> <input ng-show="editing"
+			class="value" ng-model="newNickName" />
+	</div>
+	<div style="margin: 10px 0">
+		<span class="key">#label("CELLPHONE")</span> <span ng-hide="editing" class="value">{{user.cellphone}}</span> <input ng-show="editing"
+			class="value" ng-model="newCellphone" />
+	</div>
+	<div style="margin: 10px 0" class="ng-hide" ng-show="message">
+		<span class="key">#label("CELLPHONE")</span> <input class="value" ng-model="newCellphone" />
+	</div>
+	<div>
+		<button ng-click="editing=true" ng-hide="editing">
+			<span style="font-size: 22px;">#button("EDIT")</span>
+		</button>
+		<button ng-click="bind()" ng-show="editing">
+			<span style="font-size: 22px;">#button("BIND")</span>
+		</button>
+		<button ng-click="editing=false" ng-show="editing&&user.nickName!=null">
+			<span style="font-size: 22px;">#button("CANCEL")</span>
+		</button>
+	</div>
+</div>
+<div class="home ng-hide" ng-hide="user">
+	<span>获取用户信息中</span>
+</div>
+<script src="/static/js/business/home.js?random=$version"></script>

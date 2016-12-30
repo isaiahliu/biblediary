@@ -6,6 +6,11 @@ import org.trinity.common.exception.IException;
 import org.trinity.process.controller.ICrudProcessController;
 
 public interface IUserProcessController extends ICrudProcessController<UserDto, UserSearchingDto> {
+    UserDto authenticateWechatUserByCode(String code, String session) throws IException;
 
     UserDto getWechatUser(String openid) throws IException;
+
+    UserDto getWechatUserBySession(String session) throws IException;
+
+    void update(UserDto user) throws IException;
 }

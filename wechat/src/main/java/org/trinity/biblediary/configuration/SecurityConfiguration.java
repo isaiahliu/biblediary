@@ -19,6 +19,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http.csrf().disable().addFilterAfter(signatureFilter, SecurityContextPersistenceFilter.class).authorizeRequests()
-                .antMatchers("/menu/refresh").permitAll().anyRequest().authenticated();
+                .antMatchers("/menu", "/user", "/static/**").permitAll().anyRequest().authenticated();
     }
 }

@@ -38,6 +38,8 @@ public class User extends AbstractAuditableEntity implements Serializable {
     @Column(name = "nick_name")
     private String nickName;
 
+    private String session;
+
     private UserStatus status;
 
     private String wechat;
@@ -78,6 +80,10 @@ public class User extends AbstractAuditableEntity implements Serializable {
         return this.plan;
     }
 
+    public String getSession() {
+        return session;
+    }
+
     public UserStatus getStatus() {
         return this.status;
     }
@@ -108,6 +114,10 @@ public class User extends AbstractAuditableEntity implements Serializable {
 
     public void setPlan(final Plan plan) {
         this.plan = plan;
+    }
+
+    public void setSession(final String session) {
+        this.session = session;
     }
 
     public void setStatus(final UserStatus status) {

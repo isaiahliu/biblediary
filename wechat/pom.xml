@@ -12,12 +12,6 @@
 		<dependency>
 			<groupId>org.trinity.framework.springboot</groupId>
 			<artifactId>web</artifactId>
-			<exclusions>
-				<exclusion>
-					<artifactId>spring-boot-starter-velocity</artifactId>
-					<groupId>org.springframework.boot</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.trinity.biblediary</groupId>
@@ -42,5 +36,35 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<excludes>
+					<exclude>static/css/lib/fonts/**</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>static/css/lib/fonts/**</include>
+				</includes>
+			</resource>
+		</resources>
 	</build>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>dom4j</groupId>
+				<artifactId>dom4j</artifactId>
+				<version>1.6.1</version>
+			</dependency>
+			<dependency>
+				<groupId>antlr</groupId>
+				<artifactId>antlr</artifactId>
+				<version>2.7.7</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>

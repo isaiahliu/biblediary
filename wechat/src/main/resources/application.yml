@@ -3,6 +3,9 @@ server:
 logging:
   config: classpath:log4j2.xml
 spring:
+  http: 
+    encoding: 
+      charset: UTF-8
   profiles: 
     active: '@profileActive@'
   messages:
@@ -25,7 +28,15 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5Dialect
-
+  velocity: 
+    resourceLoaderPath: classpath:/velocity/
+    checkTemplateLocation: true
+    suffix: .vm
+    properties: 
+      #configurations from org.apache.velocity.runtime.RuntimeConstants
+      layoutUrl: base/layout.vm 
+      velocimacro.permissions.allow.inline.to.replace.global: true 
+      velocimacro.library: /velocity/base/macro.vm
 ---
 spring: 
   profiles: qa

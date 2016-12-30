@@ -2,12 +2,16 @@ package org.trinity.biblediary.wechat.util;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.UUID;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,35 +22,90 @@ import org.trinity.biblediary.process.controller.base.IWechatProcessController;
 import org.trinity.common.exception.IException;
 
 public class SignatureFilter extends OncePerRequestFilter {
-	@Autowired
-	private IWechatProcessController wechatProcessController;
+    private static final String RESOURCE_PATHS[] = { "/static/" };
+    private static final String COOKIE_NAME = "TRINITY_BIBLEDIARY";
+    private static Logger logger = LogManager.getLogger(SignatureFilter.class);
 
-	@Autowired
-	private IUserProcessController userProcessController;
+    @Autowired
+    private IWechatProcessController wechatProcessController;
 
-	@Override
-	protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain)
-			throws ServletException, IOException {
-		final String signature = request.getParameter("signature");
-		final String timestamp = request.getParameter("timestamp");
-		final String nonce = request.getParameter("nonce");
-		final String openid = request.getParameter("openid");
+    @Autowired
+    private IUserProcessController userProcessController;
 
-		try {
-			if (signature != null) {
-				wechatProcessController.verify(signature, timestamp, nonce);
-				UserDto user;
-				if (openid != null) {
-					user = userProcessController.getWechatUser(openid);
-				} else {
-					user = new UserDto();
-				}
-				SecurityContextHolder.getContext()
-						.setAuthentication(new UsernamePasswordAuthenticationToken(user, user, Collections.emptyList()));
-			}
-			filterChain.doFilter(request, response);
-		} catch (final IException e) {
-			throw new ServletException();
-		}
-	}
+    private boolean isResourcePath(final String path) {
+        for (final String resourcePath : RESOURCE_PATHS) {
+            if (path.toLowerCase().startsWith(resourcePath)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain)
+            throws ServletException, IOException {
+        logger.debug(request.getServletPath());
+        if (isResourcePath(request.getServletPath())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        final String signature = request.getParameter("signature");
+        final String timestamp = request.getParameter("timestamp");
+        final String nonce = request.getParameter("nonce");
+        final String openid = request.getParameter("openid");
+
+        final String code = request.getParameter("code");
+
+        String session = null;
+        if (request.getCookies() != null) {
+            for (final Cookie cookie : request.getCookies()) {
+                if (cookie.getName().equals(COOKIE_NAME)) {
+                    session = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        try {
+            if (signature != null) {
+                wechatProcessController.verify(signature, timestamp, nonce);
+                UserDto user;
+                if (openid != null) {
+                    user = userProcessController.getWechatUser(openid);
+                } else {
+                    user = new UserDto();
+                }
+                SecurityContextHolder.getContext()
+                        .setAuthentication(new UsernamePasswordAuthenticationToken(user, user, Collections.emptyList()));
+            }
+
+            if (code != null) {
+                if (session == null) {
+                    session = UUID.randomUUID().toString();
+                    final Cookie cookie = new Cookie(COOKIE_NAME, session);
+                    cookie.setPath("/");
+                    response.addCookie(cookie);
+                }
+
+                final UserDto user = userProcessController.authenticateWechatUserByCode(code, session);
+
+                if (user != null) {
+                    SecurityContextHolder.getContext()
+                            .setAuthentication(new UsernamePasswordAuthenticationToken(user, user, Collections.emptyList()));
+                }
+            } else if (session != null) {
+                final UserDto user = userProcessController.getWechatUserBySession(session);
+
+                if (user != null) {
+                    SecurityContextHolder.getContext()
+                            .setAuthentication(new UsernamePasswordAuthenticationToken(user, user, Collections.emptyList()));
+                }
+            }
+
+            filterChain.doFilter(request, response);
+        } catch (final IException e) {
+            throw new ServletException();
+        }
+    }
 }

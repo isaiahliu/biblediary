@@ -1,0 +1,18 @@
+html {
+	font-family: "Microsoft YaHei" ! important;
+	font-size: 22px;
+}
+
+div.content {
+	text-align: center;
+}
+
+span.key {
+	display: inline-block;
+	width: 80px;
+}
+
+input.value {
+	width: 200px;
+	line-height: 22px;
+}
