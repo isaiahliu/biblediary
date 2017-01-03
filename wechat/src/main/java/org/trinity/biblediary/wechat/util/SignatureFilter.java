@@ -1,7 +1,8 @@
 package org.trinity.biblediary.wechat.util;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.FilterChain;
@@ -17,6 +18,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.trinity.biblediary.common.message.dto.domain.UserDto;
+import org.trinity.biblediary.common.message.lookup.AccessRight;
+import org.trinity.biblediary.common.message.lookup.FlagStatus;
 import org.trinity.biblediary.process.controller.base.IUserProcessController;
 import org.trinity.biblediary.process.controller.base.IWechatProcessController;
 import org.trinity.common.exception.IException;
@@ -68,16 +71,14 @@ public class SignatureFilter extends OncePerRequestFilter {
         }
 
         try {
+            UserDto user = null;
             if (signature != null) {
                 wechatProcessController.verify(signature, timestamp, nonce);
-                UserDto user;
                 if (openid != null) {
                     user = userProcessController.getWechatUser(openid);
                 } else {
                     user = new UserDto();
                 }
-                SecurityContextHolder.getContext()
-                        .setAuthentication(new UsernamePasswordAuthenticationToken(user, user, Collections.emptyList()));
             }
 
             if (code != null) {
@@ -88,21 +89,20 @@ public class SignatureFilter extends OncePerRequestFilter {
                     response.addCookie(cookie);
                 }
 
-                final UserDto user = userProcessController.authenticateWechatUserByCode(code, session);
-
-                if (user != null) {
-                    SecurityContextHolder.getContext()
-                            .setAuthentication(new UsernamePasswordAuthenticationToken(user, user, Collections.emptyList()));
-                }
+                user = userProcessController.authenticateWechatUserByCode(code, session);
             } else if (session != null) {
-                final UserDto user = userProcessController.getWechatUserBySession(session);
-
-                if (user != null) {
-                    SecurityContextHolder.getContext()
-                            .setAuthentication(new UsernamePasswordAuthenticationToken(user, user, Collections.emptyList()));
-                }
+                user = userProcessController.getWechatUserBySession(session);
             }
 
+            if (user != null) {
+                final boolean isAdmin = user.getAdmin() != null && FlagStatus.YES.getMessageCode().equals(user.getAdmin().getCode());
+
+                final List<AccessRight> accessRights = new ArrayList<>();
+                if (isAdmin) {
+                    accessRights.add(AccessRight.SUPER_USER);
+                }
+                SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user, user, accessRights));
+            }
             filterChain.doFilter(request, response);
         } catch (final IException e) {
             throw new ServletException();
