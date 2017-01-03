@@ -13,7 +13,6 @@
 	<name>biblediary</name>
 	<modules>
 		<module>wechat</module>
-		<module>web</module>
 		<module>process</module>
 		<module>common</module>
 		<module>repository</module>
