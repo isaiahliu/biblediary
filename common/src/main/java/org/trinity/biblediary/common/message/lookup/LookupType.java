@@ -14,7 +14,9 @@ public enum LookupType implements ILookupType, ILookupMessage<LookupType> {
     SYSTEM_ATTRIBUTE_KEY("SYSKEY", SystemAttributeKey.class),
     RECORD_STATUS("RCSTAT", RecordStatus.class),
     LANGUAGE("LANGUAGE", Language.class),
-    FLAG_STATUS("FLAG", FlagStatus.class);
+    FLAG_STATUS("FLAG", FlagStatus.class),
+    PLAN_NAME("PLAN", PlanName.class),
+    BIBLE_VOLUME("BIBLE", BibleVolume.class);
 
     private String typeName;
 

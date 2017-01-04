@@ -17,33 +17,33 @@ import org.trinity.message.LookupParser;
 import org.trinity.repository.repository.IJpaRepository;
 
 public interface IUserRepository extends IJpaRepository<User, UserSearchingDto> {
-    User findOneBySession(String session);
+	User findOneBySession(String session);
 
-    User findOneByWechat(String wechat);
+	User findOneByWechat(String wechat);
 
-    @Override
-    default Page<User> query(final UserSearchingDto searchingDto, final Pageable pagable) {
-        final Specification<User> specification = (root, query, cb) -> {
-            final List<Predicate> predicates = new ArrayList<>();
-            if (!searchingDto.isSearchAll()) {
-            }
+	@Override
+	default Page<User> query(final UserSearchingDto searchingDto, final Pageable pagable) {
+		final Specification<User> specification = (root, query, cb) -> {
+			final List<Predicate> predicates = new ArrayList<>();
+			if (!searchingDto.isSearchAll()) {
+			}
 
-            if (searchingDto.getId() != null) {
-                predicates.add(cb.equal(root.get(User_.id), searchingDto.getId()));
-            }
+			if (searchingDto.getId() != null) {
+				predicates.add(cb.equal(root.get(User_.id), searchingDto.getId()));
+			}
 
-            if (searchingDto.getStatus().isEmpty()) {
-                if (!searchingDto.isSearchAllStatus()) {
-                    predicates.add(cb.equal(root.get(User_.status), UserStatus.MEMBER));
-                }
-            } else {
-                final In<UserStatus> in = cb.in(root.get(User_.status));
-                searchingDto.getStatus().stream().map(item -> LookupParser.parse(UserStatus.class, item)).forEach(item -> in.value(item));
-                predicates.add(in);
-            }
+			if (searchingDto.getStatus().isEmpty()) {
+				if (!searchingDto.isSearchAllStatus()) {
+					predicates.add(cb.equal(root.get(User_.status), UserStatus.MEMBER));
+				}
+			} else {
+				final In<UserStatus> in = cb.in(root.get(User_.status));
+				searchingDto.getStatus().stream().map(item -> LookupParser.parse(UserStatus.class, item)).forEach(item -> in.value(item));
+				predicates.add(in);
+			}
 
-            return cb.and(predicates.toArray(new Predicate[0]));
-        };
-        return findAll(specification, pagable);
-    }
+			return cb.and(predicates.toArray(new Predicate[0]));
+		};
+		return findAll(specification, pagable);
+	}
 }

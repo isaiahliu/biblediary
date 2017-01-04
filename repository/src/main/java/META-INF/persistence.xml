@@ -7,5 +7,8 @@
 		<class>org.trinity.biblediary.repository.business.entity.Plan</class>
 		<class>org.trinity.biblediary.repository.business.entity.SystemAttribute</class>
 		<class>org.trinity.biblediary.repository.business.entity.User</class>
+		<class>org.trinity.biblediary.repository.business.entity.PlanProgress</class>
+		<class>org.trinity.biblediary.repository.business.entity.PlanProgressDetail</class>
+		<class>org.trinity.biblediary.repository.business.entity.SignOff</class>
 	</persistence-unit>
 </persistence>

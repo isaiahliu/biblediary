@@ -2,135 +2,100 @@
 package org.trinity.biblediary.repository.business.entity;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
+import org.trinity.biblediary.common.message.lookup.PlanName;
 import org.trinity.biblediary.common.message.lookup.RecordStatus;
 import org.trinity.repository.entity.AbstractAuditableEntity;
 
 /**
  * The persistent class for the plan database table.
- *
+ * 
  */
 @Entity
 @NamedQuery(name = "Plan.findAll", query = "SELECT p FROM Plan p")
 public class Plan extends AbstractAuditableEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Temporal(TemporalType.DATE)
-    private Date date;
+	private PlanName name;
 
-    @Column(name = "from_chapter")
-    private int fromChapter;
+	private RecordStatus status;
 
-    @Column(name = "from_volume")
-    private String fromVolume;
+	// bi-directional many-to-one association to PlanProgress
+	@OneToMany(mappedBy = "plan")
+	private List<PlanProgress> progresses;
 
-    private RecordStatus status;
+	// bi-directional many-to-many association to User
+	@ManyToMany(mappedBy = "plans")
+	private List<User> users;
 
-    @Column(name = "to_chapter")
-    private int toChapter;
+	public Plan() {
+	}
 
-    @Column(name = "to_volume")
-    private String toVolume;
+	public PlanProgress addProgress(final PlanProgress progress) {
+		getProgresses().add(progress);
+		progress.setPlan(this);
 
-    // bi-directional many-to-one association to User
-    @OneToMany(mappedBy = "plan")
-    private List<User> users;
+		return progress;
+	}
 
-    public Plan() {
-    }
+	public Long getId() {
+		return this.id;
+	}
 
-    public User addUser(final User user) {
-        getUsers().add(user);
-        user.setPlan(this);
+	public PlanName getName() {
+		return this.name;
+	}
 
-        return user;
-    }
+	public List<PlanProgress> getProgresses() {
+		return this.progresses;
+	}
 
-    public Date getDate() {
-        return this.date;
-    }
+	public RecordStatus getStatus() {
+		return this.status;
+	}
 
-    public int getFromChapter() {
-        return this.fromChapter;
-    }
+	public List<User> getUsers() {
+		return this.users;
+	}
 
-    public String getFromVolume() {
-        return this.fromVolume;
-    }
+	public PlanProgress removeProgress(final PlanProgress progress) {
+		getProgresses().remove(progress);
+		progress.setPlan(null);
 
-    public Long getId() {
-        return this.id;
-    }
+		return progress;
+	}
 
-    public RecordStatus getStatus() {
-        return this.status;
-    }
+	public void setId(final Long id) {
+		this.id = id;
+	}
 
-    public int getToChapter() {
-        return this.toChapter;
-    }
+	public void setName(final PlanName name) {
+		this.name = name;
+	}
 
-    public String getToVolume() {
-        return this.toVolume;
-    }
+	public void setProgresses(final List<PlanProgress> progresses) {
+		this.progresses = progresses;
+	}
 
-    public List<User> getUsers() {
-        return this.users;
-    }
+	public void setStatus(final RecordStatus status) {
+		this.status = status;
+	}
 
-    public User removeUser(final User user) {
-        getUsers().remove(user);
-        user.setPlan(null);
-
-        return user;
-    }
-
-    public void setDate(final Date date) {
-        this.date = date;
-    }
-
-    public void setFromChapter(final int fromChapter) {
-        this.fromChapter = fromChapter;
-    }
-
-    public void setFromVolume(final String fromVolume) {
-        this.fromVolume = fromVolume;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public void setStatus(final RecordStatus status) {
-        this.status = status;
-    }
-
-    public void setToChapter(final int toChapter) {
-        this.toChapter = toChapter;
-    }
-
-    public void setToVolume(final String toVolume) {
-        this.toVolume = toVolume;
-    }
-
-    public void setUsers(final List<User> users) {
-        this.users = users;
-    }
+	public void setUsers(final List<User> users) {
+		this.users = users;
+	}
 
 }

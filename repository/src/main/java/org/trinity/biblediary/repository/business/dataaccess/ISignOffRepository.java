@@ -9,31 +9,31 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.trinity.biblediary.common.message.dto.domain.ChurchSearchingDto;
+import org.trinity.biblediary.common.message.dto.domain.SignOffSearchingDto;
 import org.trinity.biblediary.common.message.lookup.RecordStatus;
-import org.trinity.biblediary.repository.business.entity.Church;
-import org.trinity.biblediary.repository.business.entity.Church_;
+import org.trinity.biblediary.repository.business.entity.SignOff;
+import org.trinity.biblediary.repository.business.entity.SignOff_;
 import org.trinity.message.LookupParser;
 import org.trinity.repository.repository.IJpaRepository;
 
-public interface IChurchRepository extends IJpaRepository<Church, ChurchSearchingDto> {
+public interface ISignOffRepository extends IJpaRepository<SignOff, SignOffSearchingDto> {
 	@Override
-	default Page<Church> query(final ChurchSearchingDto searchingDto, final Pageable pagable) {
-		final Specification<Church> specification = (root, query, cb) -> {
+	default Page<SignOff> query(final SignOffSearchingDto searchingDto, final Pageable pagable) {
+		final Specification<SignOff> specification = (root, query, cb) -> {
 			final List<Predicate> predicates = new ArrayList<>();
 			if (!searchingDto.isSearchAll()) {
 			}
 
 			if (searchingDto.getId() != null) {
-				predicates.add(cb.equal(root.get(Church_.id), searchingDto.getId()));
+				predicates.add(cb.equal(root.get(SignOff_.id), searchingDto.getId()));
 			}
 
 			if (searchingDto.getStatus().isEmpty()) {
 				if (!searchingDto.isSearchAllStatus()) {
-					predicates.add(cb.equal(root.get(Church_.status), RecordStatus.ACTIVE));
+					predicates.add(cb.equal(root.get(SignOff_.status), RecordStatus.ACTIVE));
 				}
 			} else {
-				final In<RecordStatus> in = cb.in(root.get(Church_.status));
+				final In<RecordStatus> in = cb.in(root.get(SignOff_.status));
 				searchingDto.getStatus().stream().map(item -> LookupParser.parse(RecordStatus.class, item)).forEach(item -> in.value(item));
 				predicates.add(in);
 			}

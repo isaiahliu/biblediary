@@ -11,35 +11,35 @@ import org.trinity.common.exception.IException;
 
 @Service
 public class SystemAttributeProcessController implements ISystemAttributeProcessController {
-    @Autowired
-    private ISystemAttributeRepository systemAttributeRepository;
+	@Autowired
+	private ISystemAttributeRepository systemAttributeRepository;
 
-    @Override
-    public String getValue(final SystemAttributeKey key) throws IException {
-        SystemAttribute entity = systemAttributeRepository.findOne(key);
-        if (entity == null) {
-            entity = new SystemAttribute();
-            entity.setId(key);
-            entity.setValue(key.getDefaultValue());
-            entity.setStatus(RecordStatus.ACTIVE);
+	@Override
+	public String getValue(final SystemAttributeKey key) throws IException {
+		SystemAttribute entity = systemAttributeRepository.findOne(key);
+		if (entity == null) {
+			entity = new SystemAttribute();
+			entity.setId(key);
+			entity.setValue(key.getDefaultValue());
+			entity.setStatus(RecordStatus.ACTIVE);
 
-            systemAttributeRepository.save(entity);
-        }
+			systemAttributeRepository.save(entity);
+		}
 
-        return entity.getValue();
-    }
+		return entity.getValue();
+	}
 
-    @Override
-    public void setValue(final SystemAttributeKey key, final String value) throws IException {
-        SystemAttribute entity = systemAttributeRepository.findOne(key);
+	@Override
+	public void setValue(final SystemAttributeKey key, final String value) throws IException {
+		SystemAttribute entity = systemAttributeRepository.findOne(key);
 
-        if (entity == null) {
-            entity = new SystemAttribute();
-            entity.setId(key);
-            entity.setStatus(RecordStatus.ACTIVE);
-        }
+		if (entity == null) {
+			entity = new SystemAttribute();
+			entity.setId(key);
+			entity.setStatus(RecordStatus.ACTIVE);
+		}
 
-        entity.setValue(value);
-        systemAttributeRepository.save(entity);
-    }
+		entity.setValue(value);
+		systemAttributeRepository.save(entity);
+	}
 }
