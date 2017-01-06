@@ -1,5 +1,7 @@
 package org.trinity.biblediary.common.message.dto.domain;
 
+import java.util.List;
+
 import org.trinity.common.dto.domain.AbstractBusinessDto;
 import org.trinity.common.dto.object.LookupDto;
 
@@ -14,7 +16,7 @@ public class UserDto extends AbstractBusinessDto {
 
     private ChurchDto church;
 
-    private PlanDto plan;
+    private List<PlanDto> plans;
 
     private String session;
 
@@ -36,8 +38,8 @@ public class UserDto extends AbstractBusinessDto {
         return nickName;
     }
 
-    public PlanDto getPlan() {
-        return plan;
+    public List<PlanDto> getPlans() {
+        return plans;
     }
 
     public String getSession() {
@@ -68,8 +70,8 @@ public class UserDto extends AbstractBusinessDto {
         this.nickName = nickName;
     }
 
-    public void setPlan(final PlanDto plan) {
-        this.plan = plan;
+    public void setPlans(final List<PlanDto> plans) {
+        this.plans = plans;
     }
 
     public void setSession(final String session) {

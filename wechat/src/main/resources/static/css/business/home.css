@@ -3,20 +3,29 @@ html {
 	font-size: 22px;
 }
 
+div {
+	
+}
+
 div.content {
 	text-align: center;
+	width: 100%;
+}
+
+div.title {
+	margin: 100px 0 40px 0;
 }
 
 .key {
 	display: inline-block;
-	width: 30%;
+	width: 25%;
 	text-align: right;
 	margin-right: 10px;
 }
 
 .value {
 	display: inline-block;
-	width: 45%;
+	width: 55%;
 	text-align: left;
 }
 
@@ -42,4 +51,23 @@ select {
 button {
 	width: 25%;
 	border-radius: 3px;
+}
+
+div.navItem {
+	display: inline-block;
+	min-width: 100px;
+	width: 30%;
+	text-align: center;
+}
+
+a {
+	text-decoration: none;
+}
+
+div.navItem span {
+	display: block;
+	background: #cccccc;
+	padding: 5px;
+	text-decoration: none;
+	color: black;
 }
