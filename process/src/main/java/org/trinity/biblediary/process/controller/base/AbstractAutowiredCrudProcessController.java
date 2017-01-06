@@ -2,12 +2,13 @@ package org.trinity.biblediary.process.controller.base;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.trinity.biblediary.common.message.dto.domain.UserDto;
 import org.trinity.biblediary.common.message.lookup.AccessRight;
 import org.trinity.common.accessright.ISecurityUtil;
 import org.trinity.common.dto.domain.AbstractBusinessDto;
 import org.trinity.common.dto.object.IPagingDto;
 import org.trinity.common.dto.object.ISearchingDto;
-import org.trinity.common.exception.IException;
 import org.trinity.common.exception.factory.IExceptionFactory;
 import org.trinity.process.controller.AbstractCrudProcessController;
 import org.trinity.process.converter.IObjectConverter;
@@ -64,11 +65,7 @@ public abstract class AbstractAutowiredCrudProcessController<TEntity, TDto exten
 
     @Override
     protected String getCurrentUsername() {
-        try {
-            return getSecurityUtil().getCurrentToken().getUsername();
-        } catch (final IException e) {
-            return null;
-        }
+        return ((UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getWechat();
     }
 
     @Override

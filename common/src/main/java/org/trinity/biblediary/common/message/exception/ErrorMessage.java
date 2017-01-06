@@ -12,7 +12,10 @@ public enum ErrorMessage implements IErrorMessage {
     LOGGED_BY_OTHERS,
     PASSWORD_CHANGED,
     TOKEN_IS_EXPIRED,
-    USER_IS_DISABLED;
+    USER_IS_DISABLED,
+    NOT_JOINED_THIS_PLAN,
+    PLAN_HAS_FINISHED,
+    YOUR_NEXT_PROGRESS_WILL_START_ON;
     @Override
     public String getMessageCode() {
         return name();

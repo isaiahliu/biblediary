@@ -9,7 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -17,100 +16,111 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.trinity.biblediary.common.message.lookup.RecordStatus;
+import org.trinity.biblediary.common.message.lookup.TimeZone;
 import org.trinity.repository.entity.AbstractAuditableEntity;
 
 /**
  * The persistent class for the sign_off database table.
- * 
+ *
  */
 @Entity
 @Table(name = "sign_off")
 @NamedQuery(name = "SignOff.findAll", query = "SELECT s FROM SignOff s")
 public class SignOff extends AbstractAuditableEntity implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@Column(name = "exceed_days")
-	private int exceedDays;
+    @Column(name = "exceed_days")
+    private int exceedDays;
 
-	@Column(name = "override_exceed_days")
-	private int overrideExceedDays;
+    @Column(name = "override_exceed_days")
+    private int overrideExceedDays;
 
-	@Temporal(TemporalType.DATE)
-	@Column(name = "sign_off_date")
-	private Date signOffDate;
+    @Temporal(TemporalType.DATE)
+    @Column(name = "for_date")
+    private Date forDate;
 
-	private RecordStatus status;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "local_timestamp")
+    private Date localTimestamp;
 
-	// bi-directional many-to-one association to PlanProgress
-	@ManyToOne
-	@JoinColumn(name = "plan_progress_id")
-	private PlanProgress progress;
+    @Column(name = "local_time_zone")
+    private TimeZone localTimeZone;
 
-	// bi-directional many-to-one association to User
-	@ManyToOne
-	private User user;
+    private RecordStatus status;
 
-	public SignOff() {
-	}
+    // bi-directional many-to-one association to User
+    @ManyToOne
+    private User user;
 
-	public int getExceedDays() {
-		return this.exceedDays;
-	}
+    public SignOff() {
+    }
 
-	public Long getId() {
-		return this.id;
-	}
+    public int getExceedDays() {
+        return this.exceedDays;
+    }
 
-	public int getOverrideExceedDays() {
-		return this.overrideExceedDays;
-	}
+    public Date getForDate() {
+        return this.forDate;
+    }
 
-	public PlanProgress getProgress() {
-		return this.progress;
-	}
+    public Long getId() {
+        return this.id;
+    }
 
-	public Date getSignOffDate() {
-		return this.signOffDate;
-	}
+    public Date getLocalTimestamp() {
+        return localTimestamp;
+    }
 
-	public RecordStatus getStatus() {
-		return this.status;
-	}
+    public int getOverrideExceedDays() {
+        return this.overrideExceedDays;
+    }
 
-	public User getUser() {
-		return this.user;
-	}
+    public RecordStatus getStatus() {
+        return this.status;
+    }
 
-	public void setExceedDays(final int exceedDays) {
-		this.exceedDays = exceedDays;
-	}
+    public User getUser() {
+        return this.user;
+    }
 
-	public void setId(final Long id) {
-		this.id = id;
-	}
+    public void setExceedDays(final int exceedDays) {
+        this.exceedDays = exceedDays;
+    }
 
-	public void setOverrideExceedDays(final int overrideExceedDays) {
-		this.overrideExceedDays = overrideExceedDays;
-	}
+    public void setForDate(final Date forDate) {
+        this.forDate = forDate;
+    }
 
-	public void setProgress(final PlanProgress progress) {
-		this.progress = progress;
-	}
+    public void setId(final Long id) {
+        this.id = id;
+    }
 
-	public void setSignOffDate(final Date signOffDate) {
-		this.signOffDate = signOffDate;
-	}
+    public void setLocalTimestamp(final Date localTimestamp) {
+        this.localTimestamp = localTimestamp;
+    }
 
-	public void setStatus(final RecordStatus status) {
-		this.status = status;
-	}
+    public void setOverrideExceedDays(final int overrideExceedDays) {
+        this.overrideExceedDays = overrideExceedDays;
+    }
 
-	public void setUser(final User user) {
-		this.user = user;
-	}
+    public void setStatus(final RecordStatus status) {
+        this.status = status;
+    }
+
+    public void setUser(final User user) {
+        this.user = user;
+    }
+
+    public TimeZone getLocalTimeZone() {
+        return localTimeZone;
+    }
+
+    public void setLocalTimeZone(TimeZone localTimeZone) {
+        this.localTimeZone = localTimeZone;
+    }
 
 }

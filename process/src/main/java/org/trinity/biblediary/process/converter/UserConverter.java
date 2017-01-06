@@ -2,9 +2,12 @@ package org.trinity.biblediary.process.converter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.trinity.biblediary.common.message.dto.domain.ChurchDto;
 import org.trinity.biblediary.common.message.dto.domain.UserDto;
 import org.trinity.biblediary.common.message.lookup.FlagStatus;
+import org.trinity.biblediary.common.message.lookup.TimeZone;
 import org.trinity.biblediary.common.message.lookup.UserStatus;
+import org.trinity.biblediary.repository.business.entity.Church;
 import org.trinity.biblediary.repository.business.entity.User;
 import org.trinity.common.dto.object.LookupDto;
 import org.trinity.common.dto.object.RelationshipExpression;
@@ -16,8 +19,12 @@ import org.trinity.process.converter.IObjectConverter;
 @Component
 public class UserConverter extends AbstractLookupSupportObjectConverter<User, UserDto> {
     private static enum UserRelationship {
+        CHURCH,
         NA
     }
+
+    @Autowired
+    private IObjectConverter<Church, ChurchDto> churchConverter;
 
     @Autowired
     public UserConverter(final IObjectConverter<Tuple2<ILookupMessage<?>, String[]>, LookupDto> lookupConverter) {
@@ -33,6 +40,7 @@ public class UserConverter extends AbstractLookupSupportObjectConverter<User, Us
 
         copyLookup(source::getStatus, target::getStatus, target::setStatus, UserStatus.class, copyPolicy);
         copyLookup(source::getAdmin, target::getAdmin, target::setAdmin, FlagStatus.class, copyPolicy);
+        copyLookup(source::getTimeZone, target::getTimeZone, target::setTimeZone, TimeZone.class, copyPolicy);
     }
 
     @Override
@@ -44,12 +52,16 @@ public class UserConverter extends AbstractLookupSupportObjectConverter<User, Us
 
         copyMessage(source::getStatus, target::getStatus, target::setStatus, copyPolicy);
         copyMessage(source::getAdmin, target::getAdmin, target::setAdmin, copyPolicy);
+        copyMessage(source::getTimeZone, target::getTimeZone, target::setTimeZone, copyPolicy);
     }
 
     @Override
     protected void convertRelationshipInternal(final User source, final UserDto target,
             final RelationshipExpression relationshipExpression) {
         switch (relationshipExpression.getName(UserRelationship.class)) {
+        case CHURCH:
+            copyRelationship(source::getChurch, target::setChurch, churchConverter, relationshipExpression);
+            break;
         case NA:
         default:
             break;

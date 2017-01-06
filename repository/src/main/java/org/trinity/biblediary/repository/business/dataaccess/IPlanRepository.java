@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.trinity.biblediary.common.message.dto.domain.PlanSearchingDto;
+import org.trinity.biblediary.common.message.lookup.PlanName;
 import org.trinity.biblediary.common.message.lookup.RecordStatus;
 import org.trinity.biblediary.repository.business.entity.Plan;
 import org.trinity.biblediary.repository.business.entity.Plan_;
@@ -17,6 +18,8 @@ import org.trinity.message.LookupParser;
 import org.trinity.repository.repository.IJpaRepository;
 
 public interface IPlanRepository extends IJpaRepository<Plan, PlanSearchingDto> {
+    Plan findOneByName(PlanName name);
+
     @Override
     default Page<Plan> query(final PlanSearchingDto searchingDto, final Pageable pagable) {
         final Specification<Plan> specification = (root, query, cb) -> {

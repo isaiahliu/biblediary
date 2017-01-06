@@ -1,29 +1,38 @@
 <link rel="stylesheet" href="/static/css/business/home.css?random=$version"></link>
 #title("USER_INFO")
+<div style="position: fixed; width: 100%; text-align: center; top: 0;" class="ng-hide" ng-show="message">
+	<span>{{message}}</span>
+</div>
+
 <div class="home ng-hide" ng-show="user">
-	<div style="margin: 70px 0;">
+	<div style="margin: 70px 0 40px 0;">
 		<span>#info("USER_INFO")</span>
 	</div>
-	<div style="margin: 10px 0">
-		<span class="key" style="">#label("NAME")</span> <span ng-hide="editing" class="value">{{user.nickName}}</span> <input ng-show="editing"
-			class="value" ng-model="newNickName" />
+	<div style="margin: 10px 0; height: 35px;">
+		<span class="key" style="">#label("NAME")</span><input style="border-color: transparent;" ng-hide="editing" class="value"
+			ng-model="user.nickName" readonly="readonly" /><input ng-show="editing" class="value" ng-model="newNickName" />
 	</div>
-	<div style="margin: 10px 0">
-		<span class="key">#label("CELLPHONE")</span> <span ng-hide="editing" class="value">{{user.cellphone}}</span> <input ng-show="editing"
-			class="value" ng-model="newCellphone" />
+	<div style="margin: 10px 0; height: 35px;">
+		<span class="key">#label("CELLPHONE")</span><input style="border-color: transparent;" ng-hide="editing" class="value"
+			ng-model="user.cellphone" readonly="readonly" /><input ng-show="editing" class="value" ng-model="newCellphone" />
 	</div>
-	<div style="margin: 10px 0" class="ng-hide" ng-show="message">
-		<span>{{message}}</span>
+	<div style="margin: 10px 0; height: 35px;">
+		<span class="key">#label("CHURCH")</span><span ng-hide="editing" class="value">{{user.church.name}}</span><select ng-show="editing"
+			ng-model="newChurch" ng-options="church.name for church in churches" class="value"></select>
+	</div>
+	<div style="margin: 10px 0; height: 35px;">
+		<span class="key">#label("TIME_ZONE")</span><span ng-hide="editing" class="value">{{user.timeZone.message}}</span><select
+			ng-show="editing" ng-model="newTimeZone" ng-options="timeZone.message for timeZone in timeZones" class="value"></select>
 	</div>
 	<div>
-		<button ng-click="editing=true" ng-hide="editing">
-			<span style="font-size: 22px;">#button("EDIT")</span>
+		<button ng-click="changeEditingStatus(true)" ng-hide="editing">
+			<span style="font-size: 18px;">#button("EDIT")</span>
 		</button>
 		<button ng-click="bind()" ng-show="editing">
-			<span style="font-size: 22px;">#button("BIND")</span>
+			<span style="font-size: 18px;">#button("BIND")</span>
 		</button>
-		<button ng-click="editing=false" ng-show="editing&&user.nickName!=null">
-			<span style="font-size: 22px;">#button("CANCEL")</span>
+		<button ng-click="changeEditingStatus(false)" ng-show="editing&&user.nickName!=null">
+			<span style="font-size: 18px;">#button("CANCEL")</span>
 		</button>
 	</div>
 </div>

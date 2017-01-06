@@ -3,7 +3,7 @@ package org.trinity.biblediary.common.message.lookup;
 import org.trinity.message.ILookupMessage;
 
 public enum PlanName implements ILookupMessage<LookupType> {
-    DAILY_BIBLE("DAILY");
+    DAILY_BIBLE_2017("DAILY_17");
 
     private final String messageCode;
 

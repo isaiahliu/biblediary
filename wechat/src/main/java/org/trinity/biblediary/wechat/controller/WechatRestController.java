@@ -7,18 +7,25 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import org.trinity.biblediary.common.message.dto.domain.ChurchSearchingDto;
 import org.trinity.biblediary.common.message.dto.domain.UserDto;
+import org.trinity.biblediary.common.message.dto.domain.UserSearchingDto;
 import org.trinity.biblediary.common.message.dto.request.VerificationRequest;
 import org.trinity.biblediary.common.message.dto.request.WechatMessageRequest;
+import org.trinity.biblediary.common.message.dto.response.ChurchResponse;
 import org.trinity.biblediary.common.message.dto.response.WechatMessageResponse;
+import org.trinity.biblediary.process.controller.base.IChurchProcessController;
+import org.trinity.biblediary.process.controller.base.ILookupProcessController;
 import org.trinity.biblediary.process.controller.base.IUserProcessController;
 import org.trinity.biblediary.process.controller.base.IWechatProcessController;
+import org.trinity.common.dto.object.LookupResponse;
 import org.trinity.common.exception.IException;
 import org.trinity.common.exception.factory.IExceptionFactory;
 
@@ -32,12 +39,29 @@ public class WechatRestController extends AbstractResourceWechatController {
 
     @Autowired
     private IWechatProcessController wechatProcessController;
+
     @Autowired
     private IUserProcessController userProcessController;
 
+    @Autowired
+    private ILookupProcessController lookupProcessController;
+
+    @Autowired
+    private IChurchProcessController churchProcessController;
+
+    @RequestMapping(value = "ajax/church", method = RequestMethod.GET)
+    public @ResponseBody ResponseEntity<ChurchResponse> ajaxChurches(final ChurchSearchingDto searchingDto) throws IException {
+        final ChurchResponse response = new ChurchResponse();
+
+        response.addData(churchProcessController.getAll(searchingDto).getContent());
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "ajax/user", method = RequestMethod.GET)
-    public @ResponseBody ResponseEntity<UserDto> ajaxMe() throws IException {
-        return new ResponseEntity<>((UserDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal()), HttpStatus.OK);
+    public @ResponseBody ResponseEntity<UserDto> ajaxMe(final UserSearchingDto searchingDto) throws IException {
+        final UserDto result = userProcessController.getMe(searchingDto);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @RequestMapping(value = "ajax/user", method = RequestMethod.PUT)
@@ -51,9 +75,19 @@ public class WechatRestController extends AbstractResourceWechatController {
         dto.setId(user.getId());
         dto.setNickName(request.getNickName());
         dto.setCellphone(request.getCellphone());
-
+        dto.setChurch(request.getChurch());
+        dto.setTimeZone(request.getTimeZone());
         userProcessController.update(dto);
 
+    }
+
+    @RequestMapping(value = "ajax/lookup/{type}", method = RequestMethod.GET)
+    public ResponseEntity<LookupResponse> getLookupsByType(@PathVariable("type") final String lookupType) throws IException {
+        final LookupResponse response = new LookupResponse();
+
+        response.getData().addAll(lookupProcessController.getLookupsByType(lookupType));
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/menu", method = RequestMethod.GET)

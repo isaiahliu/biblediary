@@ -25,6 +25,7 @@ import org.trinity.biblediary.common.message.dto.response.WechatMessageResponse;
 import org.trinity.biblediary.common.message.exception.ErrorMessage;
 import org.trinity.biblediary.common.message.lookup.SystemAttributeKey;
 import org.trinity.biblediary.process.controller.base.ISystemAttributeProcessController;
+import org.trinity.biblediary.process.controller.base.IUserProcessController;
 import org.trinity.biblediary.process.controller.base.IWechatProcessController;
 import org.trinity.common.exception.IException;
 import org.trinity.common.exception.factory.IExceptionFactory;
@@ -39,6 +40,9 @@ public class WechatProcessController implements IWechatProcessController {
 
     @Autowired
     private ISystemAttributeProcessController systemAttributeProcessController;
+
+    @Autowired
+    private IUserProcessController userProcessController;
 
     @Override
     public void createMenu() throws IException {
@@ -121,11 +125,19 @@ public class WechatProcessController implements IWechatProcessController {
                 switch (request.getEventKey().toUpperCase()) {
                 case "KEY_PROGRESS":
                     response.setMessageType("text");
-                    response.setContent("你应该重头读/:B-)");
+                    try {
+                        response.setContent(userProcessController.getProgress());
+                    } catch (final IException e) {
+                        response.setContent(e.getMessage());
+                    }
                     break;
                 case "KEY_SIGNUP":
                     response.setMessageType("text");
-                    response.setContent("真的?/:<@");
+                    try {
+                        response.setContent(userProcessController.signup());
+                    } catch (final IException e) {
+                        response.setContent(e.getMessage());
+                    }
                     break;
                 default:
                     break;

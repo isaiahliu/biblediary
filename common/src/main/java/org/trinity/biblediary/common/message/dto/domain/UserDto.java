@@ -18,6 +18,8 @@ public class UserDto extends AbstractBusinessDto {
 
     private String session;
 
+    private LookupDto timeZone;
+
     public LookupDto getAdmin() {
         return admin;
     }
@@ -40,6 +42,10 @@ public class UserDto extends AbstractBusinessDto {
 
     public String getSession() {
         return session;
+    }
+
+    public LookupDto getTimeZone() {
+        return timeZone;
     }
 
     public String getWechat() {
@@ -68,6 +74,10 @@ public class UserDto extends AbstractBusinessDto {
 
     public void setSession(final String session) {
         this.session = session;
+    }
+
+    public void setTimeZone(final LookupDto timeZone) {
+        this.timeZone = timeZone;
     }
 
     public void setWechat(final String wechat) {

@@ -7,14 +7,39 @@ div.content {
 	text-align: center;
 }
 
-span.key {
+.key {
 	display: inline-block;
-	width: 80px;
+	width: 30%;
+	text-align: right;
+	margin-right: 10px;
 }
 
-input.value span.value {
+.value {
 	display: inline-block;
-	width: 200px;
-	font-size: 22px;
-	line-height: 22px;
+	width: 45%;
+	text-align: left;
+}
+
+span {
+	line-height: 30px;
+	padding: 1px;
+	vertical-align: bottom;
+	font-size: 20px;;
+}
+
+input {
+	line-height: 24px;
+	font-size: 20px;
+	vertical-align: top;
+}
+
+select {
+	line-height: 24px;
+	font-size: 20px;
+	vertical-align: top;
+}
+
+button {
+	width: 25%;
+	border-radius: 3px;
 }

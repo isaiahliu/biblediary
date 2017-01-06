@@ -9,8 +9,6 @@ import org.trinity.biblediary.repository.business.dataaccess.IPlanRepository;
 import org.trinity.biblediary.repository.business.entity.Plan;
 
 @Service
-public class PlanProcessController
-      extends AbstractAutowiredCrudProcessController<Plan, PlanDto, PlanSearchingDto, IPlanRepository>
-      implements IPlanProcessController {
+public class PlanProcessController extends AbstractAutowiredCrudProcessController<Plan, PlanDto, PlanSearchingDto, IPlanRepository>
+        implements IPlanProcessController {
 }
-
