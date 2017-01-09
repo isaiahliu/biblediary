@@ -28,15 +28,11 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5Dialect
-  velocity: 
-    resourceLoaderPath: classpath:/velocity/
-    checkTemplateLocation: true
-    suffix: .vm
-    properties: 
-      #configurations from org.apache.velocity.runtime.RuntimeConstants
-      layoutUrl: base/layout.vm 
-      velocimacro.permissions.allow.inline.to.replace.global: true 
-      velocimacro.library: /velocity/base/macro.vm
+  freemarker: 
+    enabled: true
+    template-loader-path: classpath:/freemarker/
+    suffix: .ftl
+
 ---
 spring: 
   profiles: qa

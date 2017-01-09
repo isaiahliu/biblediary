@@ -4,8 +4,6 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 import org.springframework.beans.BeansException;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.velocity.VelocityProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
@@ -20,15 +18,12 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.view.velocity.VelocityLayoutViewResolver;
-import org.springframework.web.servlet.view.velocity.VelocityViewResolver;
 import org.trinity.biblediary.wechat.aspect.LocaleInterceptor;
 import org.trinity.common.locale.AbstractLocaleInterceptor;
 import org.trinity.rest.util.SimplifiedChineseLocaleResolver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@SuppressWarnings("deprecation")
 @Configuration
 @EnableWebMvc
 public class WechatConfiguration extends WebMvcConfigurerAdapter implements ApplicationContextAware {
@@ -66,19 +61,6 @@ public class WechatConfiguration extends WebMvcConfigurerAdapter implements Appl
     @Bean
     public LocaleResolver getLocaleResolver() {
         return new SimplifiedChineseLocaleResolver();
-    }
-
-    @Bean(name = "velocityViewResolver")
-    @ConditionalOnProperty(name = "spring.velocity.enabled", matchIfMissing = true)
-    public VelocityViewResolver getVelocityViewResolver(final VelocityProperties properties) {
-        final VelocityLayoutViewResolver resolver = new VelocityLayoutViewResolver();
-        resolver.setExposeSpringMacroHelpers(true);
-        properties.applyToViewResolver(resolver);
-        final String layoutUrl = properties.getProperties().getOrDefault("layoutUrl", null);
-        if (layoutUrl != null) {
-            resolver.setLayoutUrl(layoutUrl);
-        }
-        return resolver;
     }
 
     @Override
