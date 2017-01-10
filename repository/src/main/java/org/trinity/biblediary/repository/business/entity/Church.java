@@ -9,7 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.TableGenerator;
@@ -27,10 +26,9 @@ import org.trinity.repository.entity.AbstractAuditableEntity;
 public class Church extends AbstractAuditableEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    // bi-directional many-to-many association to User
-    @ManyToMany(mappedBy = "churches")
-    private List<User> users;
-
+    // bi-directional many-to-one association to ChurchMember
+    @OneToMany(mappedBy = "church")
+    private List<ChurchMember> members;
     @Column(name = "join_method")
     private JoinMethod joinMethod;
 
@@ -44,6 +42,7 @@ public class Church extends AbstractAuditableEntity implements Serializable {
     private Long id;
 
     private String description;
+
     private String name;
 
     private RecordStatus status;
@@ -56,6 +55,13 @@ public class Church extends AbstractAuditableEntity implements Serializable {
         application.setChurch(this);
 
         return application;
+    }
+
+    public ChurchMember addMember(final ChurchMember member) {
+        getMembers().add(member);
+        member.setChurch(this);
+
+        return member;
     }
 
     public List<UserChurchApplication> getApplications() {
@@ -74,6 +80,10 @@ public class Church extends AbstractAuditableEntity implements Serializable {
         return this.joinMethod;
     }
 
+    public List<ChurchMember> getMembers() {
+        return this.members;
+    }
+
     public String getName() {
         return this.name;
     }
@@ -82,15 +92,18 @@ public class Church extends AbstractAuditableEntity implements Serializable {
         return this.status;
     }
 
-    public List<User> getUsers() {
-        return this.users;
-    }
-
     public UserChurchApplication removeApplication(final UserChurchApplication application) {
         getApplications().remove(application);
         application.setChurch(null);
 
         return application;
+    }
+
+    public ChurchMember removeMember(final ChurchMember member) {
+        getMembers().remove(member);
+        member.setChurch(null);
+
+        return member;
     }
 
     public void setApplications(final List<UserChurchApplication> applications) {
@@ -109,15 +122,15 @@ public class Church extends AbstractAuditableEntity implements Serializable {
         this.joinMethod = joinMethod;
     }
 
+    public void setMembers(final List<ChurchMember> members) {
+        this.members = members;
+    }
+
     public void setName(final String name) {
         this.name = name;
     }
 
     public void setStatus(final RecordStatus status) {
         this.status = status;
-    }
-
-    public void setUsers(final List<User> users) {
-        this.users = users;
     }
 }

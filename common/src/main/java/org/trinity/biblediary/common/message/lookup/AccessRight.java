@@ -3,8 +3,7 @@ package org.trinity.biblediary.common.message.lookup;
 import org.trinity.common.accessright.IAccessRight;
 
 public enum AccessRight implements IAccessRight<LookupType> {
-    SUPER_USER("SUPER", null);
-
+    ;
     private final String messageCode;
     private final AccessRight parentAccessRight;
 

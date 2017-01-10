@@ -1,8 +1,7 @@
 package org.trinity.biblediary.wechat.util;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 import java.util.UUID;
 
 import javax.servlet.FilterChain;
@@ -18,8 +17,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.trinity.biblediary.common.message.dto.domain.UserDto;
-import org.trinity.biblediary.common.message.lookup.AccessRight;
-import org.trinity.biblediary.common.message.lookup.FlagStatus;
 import org.trinity.biblediary.process.controller.base.IUserProcessController;
 import org.trinity.biblediary.process.controller.base.IWechatProcessController;
 import org.trinity.common.exception.IException;
@@ -95,13 +92,8 @@ public class SignatureFilter extends OncePerRequestFilter {
             }
 
             if (user != null) {
-                final boolean isAdmin = user.getAdmin() != null && FlagStatus.YES.getMessageCode().equals(user.getAdmin().getCode());
-
-                final List<AccessRight> accessRights = new ArrayList<>();
-                if (isAdmin) {
-                    accessRights.add(AccessRight.SUPER_USER);
-                }
-                SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user, user, accessRights));
+                SecurityContextHolder.getContext()
+                        .setAuthentication(new UsernamePasswordAuthenticationToken(user, user, Collections.emptyList()));
             }
             filterChain.doFilter(request, response);
         } catch (final IException e) {

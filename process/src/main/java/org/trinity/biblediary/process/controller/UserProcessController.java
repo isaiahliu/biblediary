@@ -25,7 +25,6 @@ import org.trinity.biblediary.common.message.dto.response.AccessTokenResponse;
 import org.trinity.biblediary.common.message.exception.ErrorMessage;
 import org.trinity.biblediary.common.message.exception.InfoMessage;
 import org.trinity.biblediary.common.message.lookup.BibleVolume;
-import org.trinity.biblediary.common.message.lookup.FlagStatus;
 import org.trinity.biblediary.common.message.lookup.RecordStatus;
 import org.trinity.biblediary.common.message.lookup.SystemAttributeKey;
 import org.trinity.biblediary.common.message.lookup.TimeZone;
@@ -74,8 +73,6 @@ public class UserProcessController extends AbstractAutowiredCrudProcessControlle
 
     @Override
     public UserDto authenticateWechatUserByCode(final String code, final String session) throws IException {
-        final User oldUser = getDomainEntityRepository().findOneBySession(session);
-
         final String appId = systemAttributeProcessController.getValue(SystemAttributeKey.APP_ID);
         final String appSec = systemAttributeProcessController.getValue(SystemAttributeKey.APP_SEC);
 
@@ -96,6 +93,8 @@ public class UserProcessController extends AbstractAutowiredCrudProcessControlle
                 code);
         final AccessTokenResponse response = restTemplate.getForEntity(url, AccessTokenResponse.class).getBody();
 
+        final User oldUser = getDomainEntityRepository().findOneBySession(session);
+
         User newUser = getDomainEntityRepository().findOneByWechat(response.getOpenid());
         if (newUser == null) {
             if (oldUser != null) {
@@ -104,7 +103,7 @@ public class UserProcessController extends AbstractAutowiredCrudProcessControlle
             }
 
             newUser = new User();
-            newUser.setAdmin(FlagStatus.NO);
+
             newUser.setCellphone(null);
             newUser.setNickName(null);
             newUser.setWechat(response.getOpenid());
@@ -197,7 +196,7 @@ public class UserProcessController extends AbstractAutowiredCrudProcessControlle
         User user = getDomainEntityRepository().findOneByWechat(openid);
         if (user == null) {
             user = new User();
-            user.setAdmin(FlagStatus.NO);
+
             user.setCellphone(null);
             user.setNickName(null);
             user.setWechat(openid);

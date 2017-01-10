@@ -16,7 +16,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.TableGenerator;
 
-import org.trinity.biblediary.common.message.lookup.FlagStatus;
 import org.trinity.biblediary.common.message.lookup.TimeZone;
 import org.trinity.biblediary.common.message.lookup.UserStatus;
 import org.trinity.repository.entity.AbstractAuditableEntity;
@@ -34,8 +33,6 @@ public class User extends AbstractAuditableEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "User_PK_IdGenerator")
     @TableGenerator(name = "User_PK_IdGenerator", table = "id_table", pkColumnName = "type", pkColumnValue = "User_PK", valueColumnName = "value", initialValue = 1, allocationSize = 1)
     private Long id;
-
-    private FlagStatus admin;
 
     private String cellphone;
 
@@ -60,15 +57,13 @@ public class User extends AbstractAuditableEntity implements Serializable {
     @JoinTable(name = "user_plan", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "plan_id") })
     private List<Plan> plans;
 
-    // bi-directional many-to-many association to Church
-    @ManyToMany
-    @JoinTable(name = "user_church", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
-            @JoinColumn(name = "church_id") })
-    private List<Church> churches;
-
     // bi-directional many-to-one association to UserChurchApplication
     @OneToMany(mappedBy = "user")
     private List<UserChurchApplication> applications;
+
+    // bi-directional many-to-one association to ChurchMember
+    @OneToMany(mappedBy = "user")
+    private List<ChurchMember> churchMembers;
 
     public User() {
     }
@@ -80,15 +75,18 @@ public class User extends AbstractAuditableEntity implements Serializable {
         return application;
     }
 
+    public ChurchMember addChurchMember(final ChurchMember churchMember) {
+        getChurchMembers().add(churchMember);
+        churchMember.setUser(this);
+
+        return churchMember;
+    }
+
     public SignOff addSignOff(final SignOff signOff) {
         getSignOffs().add(signOff);
         signOff.setUser(this);
 
         return signOff;
-    }
-
-    public FlagStatus getAdmin() {
-        return this.admin;
     }
 
     public List<UserChurchApplication> getApplications() {
@@ -99,8 +97,8 @@ public class User extends AbstractAuditableEntity implements Serializable {
         return this.cellphone;
     }
 
-    public List<Church> getChurches() {
-        return this.churches;
+    public List<ChurchMember> getChurchMembers() {
+        return this.churchMembers;
     }
 
     public Long getId() {
@@ -142,15 +140,18 @@ public class User extends AbstractAuditableEntity implements Serializable {
         return application;
     }
 
+    public ChurchMember removeChurchMember(final ChurchMember churchMember) {
+        getChurchMembers().remove(churchMember);
+        churchMember.setUser(null);
+
+        return churchMember;
+    }
+
     public SignOff removeSignOff(final SignOff signOff) {
         getSignOffs().remove(signOff);
         signOff.setUser(null);
 
         return signOff;
-    }
-
-    public void setAdmin(final FlagStatus admin) {
-        this.admin = admin;
     }
 
     public void setApplications(final List<UserChurchApplication> applications) {
@@ -161,8 +162,8 @@ public class User extends AbstractAuditableEntity implements Serializable {
         this.cellphone = cellphone;
     }
 
-    public void setChurches(final List<Church> churches) {
-        this.churches = churches;
+    public void setChurchMembers(final List<ChurchMember> churchMembers) {
+        this.churchMembers = churchMembers;
     }
 
     public void setId(final Long id) {

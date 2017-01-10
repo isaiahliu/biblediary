@@ -53,18 +53,32 @@ button {
 	border-radius: 3px;
 }
 
-div.navItem {
-	display: inline-block;
+div.subNavBar {
+	position: fixed;
+	top: 47px;
+	width: 100%;
+	text-align: left;
+}
+
+div.navItem, div.subNavItem {
 	min-width: 100px;
 	width: 30%;
 	text-align: center;
+}
+
+div.navItem {
+	display: inline-block;
+}
+
+div.subNavItem {
+	margin-bottom: 5px;
 }
 
 a {
 	text-decoration: none;
 }
 
-div.navItem span {
+div.navItem span, div.subNavItem span {
 	display: block;
 	background: #cccccc;
 	padding: 5px;

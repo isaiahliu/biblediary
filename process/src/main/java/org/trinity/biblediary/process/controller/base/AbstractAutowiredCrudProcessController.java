@@ -50,12 +50,12 @@ public abstract class AbstractAutowiredCrudProcessController<TEntity, TDto exten
 
     @Override
     protected boolean canAccessAllStatus() {
-        return getSecurityUtil().hasAccessRight(AccessRight.SUPER_USER);
+        return false;
     }
 
     @Override
     protected boolean canAccessScopeAll() {
-        return getSecurityUtil().hasAccessRight(AccessRight.SUPER_USER);
+        return false;
     }
 
     @Override

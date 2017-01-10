@@ -2,6 +2,7 @@ layoutApp.controller('contentController', function($scope, $http, $window, $time
 	$scope.inputUser = {};
 	$scope.page = "USER_INFO";
 	$scope.joiningPlan = null;
+	$scope.subNavBar = "";
 
 	$http({
 		method : "GET",
@@ -13,7 +14,7 @@ layoutApp.controller('contentController', function($scope, $http, $window, $time
 
 	$http({
 		method : "GET",
-		url : "/ajax/user?rsexp=church,plans"
+		url : "/ajax/user?rsexp=plans"
 	}).success(function(response) {
 		$scope.user = response;
 		$scope.changeEditingStatus($scope.user.nickName == "" || $scope.user.nickName == null);
@@ -53,9 +54,6 @@ layoutApp.controller('contentController', function($scope, $http, $window, $time
 			data : {
 				nickName : $scope.inputUser.nickName,
 				cellphone : $scope.inputUser.cellphone,
-				church : {
-					id : $scope.inputUser.church.id
-				},
 				timeZone : {
 					code : $scope.inputUser.timeZone.code
 				}
@@ -63,7 +61,6 @@ layoutApp.controller('contentController', function($scope, $http, $window, $time
 		}).success(function(response) {
 			$scope.user.nickName = $scope.inputUser.nickName;
 			$scope.user.cellphone = $scope.inputUser.cellphone;
-			$scope.user.church = $scope.inputUser.church;
 			$scope.user.timeZone = $scope.inputUser.timeZone;
 
 			$scope.showMessage("更新成功");
@@ -78,15 +75,6 @@ layoutApp.controller('contentController', function($scope, $http, $window, $time
 		if (flag) {
 			$scope.inputUser.nickName = $scope.user.nickName;
 			$scope.inputUser.cellphone = $scope.user.cellphone;
-			for (var index = 0; index < $scope.churches.length; index++) {
-				$scope.inputUser.church = $scope.churches[index];
-
-				if ($scope.user.church != undefined) {
-					if ($scope.user.church.id == $scope.inputUser.church.id) {
-						break;
-					}
-				}
-			}
 
 			$scope.inputUser.timeZone = null;
 			for (var index = 0; index < $scope.timeZones.length; index++) {
@@ -129,5 +117,13 @@ layoutApp.controller('contentController', function($scope, $http, $window, $time
 			$scope.showMessage("加入成功!");
 		}).error(function(response) {
 		});
+	};
+
+	$scope.showSubNavBar = function(subNavBar) {
+		if ($scope.subNavBar == subNavBar) {
+			$scope.subNavBar = "";
+		} else {
+			$scope.subNavBar = subNavBar;
+		}
 	}
 });

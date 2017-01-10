@@ -6,7 +6,6 @@ import org.trinity.common.dto.domain.AbstractBusinessDto;
 import org.trinity.common.dto.object.LookupDto;
 
 public class UserDto extends AbstractBusinessDto {
-    private LookupDto admin;
 
     private String cellphone;
 
@@ -21,10 +20,6 @@ public class UserDto extends AbstractBusinessDto {
     private String session;
 
     private LookupDto timeZone;
-
-    public LookupDto getAdmin() {
-        return admin;
-    }
 
     public String getCellphone() {
         return cellphone;
@@ -52,10 +47,6 @@ public class UserDto extends AbstractBusinessDto {
 
     public String getWechat() {
         return wechat;
-    }
-
-    public void setAdmin(final LookupDto admin) {
-        this.admin = admin;
     }
 
     public void setCellphone(final String cellphone) {

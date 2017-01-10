@@ -2,7 +2,6 @@
 package org.trinity.biblediary.repository.business.entity;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,32 +10,28 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
+import org.trinity.biblediary.common.message.lookup.FlagStatus;
 import org.trinity.biblediary.common.message.lookup.RecordStatus;
 import org.trinity.repository.entity.AbstractAuditableEntity;
 
 /**
- * The persistent class for the user_church_application database table.
+ * The persistent class for the church_member database table.
  *
  */
 @Entity
-@Table(name = "user_church_application")
-@NamedQuery(name = "UserChurchApplication.findAll", query = "SELECT u FROM UserChurchApplication u")
-public class UserChurchApplication extends AbstractAuditableEntity implements Serializable {
+@Table(name = "church_member")
+@NamedQuery(name = "ChurchMember.findAll", query = "SELECT c FROM ChurchMember c")
+public class ChurchMember extends AbstractAuditableEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private FlagStatus admin;
+
     private RecordStatus status;
-
-    private String content;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date timestamp;
 
     // bi-directional many-to-one association to Church
     @ManyToOne
@@ -46,15 +41,15 @@ public class UserChurchApplication extends AbstractAuditableEntity implements Se
     @ManyToOne
     private User user;
 
-    public UserChurchApplication() {
+    public ChurchMember() {
+    }
+
+    public FlagStatus getAdmin() {
+        return this.admin;
     }
 
     public Church getChurch() {
         return this.church;
-    }
-
-    public String getContent() {
-        return content;
     }
 
     public Long getId() {
@@ -65,20 +60,16 @@ public class UserChurchApplication extends AbstractAuditableEntity implements Se
         return this.status;
     }
 
-    public Date getTimestamp() {
-        return this.timestamp;
-    }
-
     public User getUser() {
         return this.user;
     }
 
-    public void setChurch(final Church church) {
-        this.church = church;
+    public void setAdmin(final FlagStatus admin) {
+        this.admin = admin;
     }
 
-    public void setContent(final String content) {
-        this.content = content;
+    public void setChurch(final Church church) {
+        this.church = church;
     }
 
     public void setId(final Long id) {
@@ -89,12 +80,7 @@ public class UserChurchApplication extends AbstractAuditableEntity implements Se
         this.status = status;
     }
 
-    public void setTimestamp(final Date timestamp) {
-        this.timestamp = timestamp;
-    }
-
     public void setUser(final User user) {
         this.user = user;
     }
-
 }

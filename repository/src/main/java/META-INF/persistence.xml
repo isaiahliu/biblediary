@@ -11,5 +11,6 @@
 		<class>org.trinity.biblediary.repository.business.entity.PlanProgressDetail</class>
 		<class>org.trinity.biblediary.repository.business.entity.SignOff</class>
 		<class>org.trinity.biblediary.repository.business.entity.UserChurchApplication</class>
+		<class>org.trinity.biblediary.repository.business.entity.ChurchMember</class>
 	</persistence-unit>
 </persistence>
