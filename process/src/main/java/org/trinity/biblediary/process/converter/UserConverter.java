@@ -20,68 +20,70 @@ import org.trinity.process.converter.IObjectConverter;
 
 @Component
 public class UserConverter extends AbstractLookupSupportObjectConverter<User, UserDto> {
-	private static enum UserRelationship {
-		CHURCH, PLANS, NA
-	}
+    private static enum UserRelationship {
+        CHURCHES,
+        PLANS,
+        NA
+    }
 
-	@Autowired
-	private IObjectConverter<Church, ChurchDto> churchConverter;
+    @Autowired
+    private IObjectConverter<Church, ChurchDto> churchConverter;
 
-	@Autowired
-	private IObjectConverter<Plan, PlanDto> planConverter;
+    @Autowired
+    private IObjectConverter<Plan, PlanDto> planConverter;
 
-	@Autowired
-	public UserConverter(final IObjectConverter<Tuple2<ILookupMessage<?>, String[]>, LookupDto> lookupConverter) {
-		super(lookupConverter);
-	}
+    @Autowired
+    public UserConverter(final IObjectConverter<Tuple2<ILookupMessage<?>, String[]>, LookupDto> lookupConverter) {
+        super(lookupConverter);
+    }
 
-	@Override
-	protected void convertBackInternal(final UserDto source, final User target, final CopyPolicy copyPolicy) {
-		copyObject(source::getId, target::getId, target::setId, copyPolicy);
-		copyObject(source::getCellphone, target::getCellphone, target::setCellphone, copyPolicy);
-		copyObject(source::getNickName, target::getNickName, target::setNickName, copyPolicy);
-		copyObject(source::getWechat, target::getWechat, target::setWechat, copyPolicy);
+    @Override
+    protected void convertBackInternal(final UserDto source, final User target, final CopyPolicy copyPolicy) {
+        copyObject(source::getId, target::getId, target::setId, copyPolicy);
+        copyObject(source::getCellphone, target::getCellphone, target::setCellphone, copyPolicy);
+        copyObject(source::getNickName, target::getNickName, target::setNickName, copyPolicy);
+        copyObject(source::getWechat, target::getWechat, target::setWechat, copyPolicy);
 
-		copyLookup(source::getStatus, target::getStatus, target::setStatus, UserStatus.class, copyPolicy);
-		copyLookup(source::getAdmin, target::getAdmin, target::setAdmin, FlagStatus.class, copyPolicy);
-		copyLookup(source::getTimeZone, target::getTimeZone, target::setTimeZone, TimeZone.class, copyPolicy);
-	}
+        copyLookup(source::getStatus, target::getStatus, target::setStatus, UserStatus.class, copyPolicy);
+        copyLookup(source::getAdmin, target::getAdmin, target::setAdmin, FlagStatus.class, copyPolicy);
+        copyLookup(source::getTimeZone, target::getTimeZone, target::setTimeZone, TimeZone.class, copyPolicy);
+    }
 
-	@Override
-	protected void convertInternal(final User source, final UserDto target, final CopyPolicy copyPolicy) {
-		copyObject(source::getId, target::getId, target::setId, copyPolicy);
-		copyObject(source::getCellphone, target::getCellphone, target::setCellphone, copyPolicy);
-		copyObject(source::getNickName, target::getNickName, target::setNickName, copyPolicy);
-		copyObject(source::getWechat, target::getWechat, target::setWechat, copyPolicy);
+    @Override
+    protected void convertInternal(final User source, final UserDto target, final CopyPolicy copyPolicy) {
+        copyObject(source::getId, target::getId, target::setId, copyPolicy);
+        copyObject(source::getCellphone, target::getCellphone, target::setCellphone, copyPolicy);
+        copyObject(source::getNickName, target::getNickName, target::setNickName, copyPolicy);
+        copyObject(source::getWechat, target::getWechat, target::setWechat, copyPolicy);
 
-		copyMessage(source::getStatus, target::getStatus, target::setStatus, copyPolicy);
-		copyMessage(source::getAdmin, target::getAdmin, target::setAdmin, copyPolicy);
-		copyMessage(source::getTimeZone, target::getTimeZone, target::setTimeZone, copyPolicy);
-	}
+        copyMessage(source::getStatus, target::getStatus, target::setStatus, copyPolicy);
+        copyMessage(source::getAdmin, target::getAdmin, target::setAdmin, copyPolicy);
+        copyMessage(source::getTimeZone, target::getTimeZone, target::setTimeZone, copyPolicy);
+    }
 
-	@Override
-	protected void convertRelationshipInternal(final User source, final UserDto target,
-			final RelationshipExpression relationshipExpression) {
-		switch (relationshipExpression.getName(UserRelationship.class)) {
-			case CHURCH:
-				copyRelationship(source::getChurch, target::setChurch, churchConverter, relationshipExpression);
-				break;
-			case PLANS:
-				copyRelationshipList(source::getPlans, target::setPlans, planConverter, relationshipExpression);
-				break;
-			case NA:
-			default:
-				break;
-		}
-	}
+    @Override
+    protected void convertRelationshipInternal(final User source, final UserDto target,
+            final RelationshipExpression relationshipExpression) {
+        switch (relationshipExpression.getName(UserRelationship.class)) {
+        case CHURCHES:
+            copyRelationshipList(source::getChurches, target::setChurches, churchConverter, relationshipExpression);
+            break;
+        case PLANS:
+            copyRelationshipList(source::getPlans, target::setPlans, planConverter, relationshipExpression);
+            break;
+        case NA:
+        default:
+            break;
+        }
+    }
 
-	@Override
-	protected User createFromInstance() {
-		return new User();
-	}
+    @Override
+    protected User createFromInstance() {
+        return new User();
+    }
 
-	@Override
-	protected UserDto createToInstance() {
-		return new UserDto();
-	}
+    @Override
+    protected UserDto createToInstance() {
+        return new UserDto();
+    }
 }

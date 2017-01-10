@@ -1,9 +1,9 @@
-#macro(message $key)${messageResolver.getMessage($key)}#end 
+<#macro message key>${messageResolver.getMessage(key)}</#macro> 
 
-#macro(label $key)#message("LABEL.$key")#end 
+<#macro label key><@message "LABEL.${key}"/></#macro> 
 
-#macro(button $key)#message("BUTTON.$key")#end 
+<#macro button key><@message "BUTTON.${key}"/></#macro> 
 
-#macro(title $key)<title>#message("TITLE.$key")</title>#end 
+<#macro title key><title><@message "TITLE.${key}"/></title></#macro> 
 
-#macro(info $key)#message("INFO.$key")#end
+<#macro info key><@message "INFO.${key}"/></#macro> 

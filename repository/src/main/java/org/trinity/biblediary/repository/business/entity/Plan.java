@@ -18,84 +18,84 @@ import org.trinity.repository.entity.AbstractAuditableEntity;
 
 /**
  * The persistent class for the plan database table.
- * 
+ *
  */
 @Entity
 @NamedQuery(name = "Plan.findAll", query = "SELECT p FROM Plan p")
 public class Plan extends AbstractAuditableEntity implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	private PlanName name;
+    private PlanName name;
 
-	private RecordStatus status;
+    private RecordStatus status;
 
-	// bi-directional many-to-one association to PlanProgress
-	@OneToMany(mappedBy = "plan")
-	private List<PlanProgress> progresses;
+    // bi-directional many-to-one association to PlanProgress
+    @OneToMany(mappedBy = "plan")
+    private List<PlanProgress> progresses;
 
-	// bi-directional many-to-many association to User
-	@ManyToMany(mappedBy = "plans")
-	private List<User> users;
+    // bi-directional many-to-many association to User
+    @ManyToMany(mappedBy = "plans")
+    private List<User> users;
 
-	public Plan() {
-	}
+    public Plan() {
+    }
 
-	public PlanProgress addProgress(final PlanProgress progress) {
-		getProgresses().add(progress);
-		progress.setPlan(this);
+    public PlanProgress addProgress(final PlanProgress progress) {
+        getProgresses().add(progress);
+        progress.setPlan(this);
 
-		return progress;
-	}
+        return progress;
+    }
 
-	public Long getId() {
-		return this.id;
-	}
+    public Long getId() {
+        return this.id;
+    }
 
-	public PlanName getName() {
-		return this.name;
-	}
+    public PlanName getName() {
+        return this.name;
+    }
 
-	public List<PlanProgress> getProgresses() {
-		return this.progresses;
-	}
+    public List<PlanProgress> getProgresses() {
+        return this.progresses;
+    }
 
-	public RecordStatus getStatus() {
-		return this.status;
-	}
+    public RecordStatus getStatus() {
+        return this.status;
+    }
 
-	public List<User> getUsers() {
-		return this.users;
-	}
+    public List<User> getUsers() {
+        return this.users;
+    }
 
-	public PlanProgress removeProgress(final PlanProgress progress) {
-		getProgresses().remove(progress);
-		progress.setPlan(null);
+    public PlanProgress removeProgress(final PlanProgress progress) {
+        getProgresses().remove(progress);
+        progress.setPlan(null);
 
-		return progress;
-	}
+        return progress;
+    }
 
-	public void setId(final Long id) {
-		this.id = id;
-	}
+    public void setId(final Long id) {
+        this.id = id;
+    }
 
-	public void setName(final PlanName name) {
-		this.name = name;
-	}
+    public void setName(final PlanName name) {
+        this.name = name;
+    }
 
-	public void setProgresses(final List<PlanProgress> progresses) {
-		this.progresses = progresses;
-	}
+    public void setProgresses(final List<PlanProgress> progresses) {
+        this.progresses = progresses;
+    }
 
-	public void setStatus(final RecordStatus status) {
-		this.status = status;
-	}
+    public void setStatus(final RecordStatus status) {
+        this.status = status;
+    }
 
-	public void setUsers(final List<User> users) {
-		this.users = users;
-	}
+    public void setUsers(final List<User> users) {
+        this.users = users;
+    }
 
 }

@@ -46,6 +46,7 @@ args:
 spring: 
   profiles: dev-home
 args:
+  dev-mode: true
   datasource: 
     url: jdbc:mysql://localhost:3306/biblediary_business?characterEncoding=utf-8&serverTimezone=GMT%2b8
      
@@ -53,5 +54,6 @@ args:
 spring: 
   profiles: dev-work
 args:
+  dev-mode: true
   datasource: 
     url: jdbc:mysql://localhost:3306/biblediary_business?characterEncoding=utf-8&serverTimezone=GMT%2b8

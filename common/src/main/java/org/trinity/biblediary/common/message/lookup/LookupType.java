@@ -17,7 +17,8 @@ public enum LookupType implements ILookupType, ILookupMessage<LookupType> {
     FLAG_STATUS("FLAG", FlagStatus.class),
     PLAN_NAME("PLAN", PlanName.class),
     BIBLE_VOLUME("BIBLE", BibleVolume.class),
-    TIME_ZONE("TZONE", TimeZone.class);
+    TIME_ZONE("TZONE", TimeZone.class),
+    JOIN_METHOD("JN_MTD", JoinMethod.class);
 
     private String typeName;
 

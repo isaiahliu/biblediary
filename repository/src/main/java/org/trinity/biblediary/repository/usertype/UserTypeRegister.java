@@ -8,6 +8,7 @@ import org.hibernate.annotations.TypeDefs;
 import org.trinity.biblediary.common.message.lookup.AccessRight;
 import org.trinity.biblediary.common.message.lookup.BibleVolume;
 import org.trinity.biblediary.common.message.lookup.FlagStatus;
+import org.trinity.biblediary.common.message.lookup.JoinMethod;
 import org.trinity.biblediary.common.message.lookup.Language;
 import org.trinity.biblediary.common.message.lookup.LookupType;
 import org.trinity.biblediary.common.message.lookup.PlanName;
@@ -19,6 +20,7 @@ import org.trinity.biblediary.common.message.lookup.UserStatus;
 import org.trinity.repository.type.MessageUserType;
 
 @TypeDefs({
+        @TypeDef(typeClass = MessageUserType.class, parameters = @Parameter(name = "class", value = "org.trinity.biblediary.common.message.lookup.JoinMethod"), defaultForType = JoinMethod.class),
         @TypeDef(typeClass = MessageUserType.class, parameters = @Parameter(name = "class", value = "org.trinity.biblediary.common.message.lookup.RecordStatus"), defaultForType = RecordStatus.class),
         @TypeDef(typeClass = MessageUserType.class, parameters = @Parameter(name = "class", value = "org.trinity.biblediary.common.message.lookup.Language"), defaultForType = Language.class),
         @TypeDef(typeClass = MessageUserType.class, parameters = @Parameter(name = "class", value = "org.trinity.biblediary.common.message.lookup.LookupType"), defaultForType = LookupType.class),

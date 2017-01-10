@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.TableGenerator;
@@ -56,16 +55,29 @@ public class User extends AbstractAuditableEntity implements Serializable {
     @OneToMany(mappedBy = "user")
     private List<SignOff> signOffs;
 
-    // bi-directional many-to-one association to Church
-    @ManyToOne
-    private Church church;
-
     // bi-directional many-to-many association to Plan
     @ManyToMany
     @JoinTable(name = "user_plan", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "plan_id") })
     private List<Plan> plans;
 
+    // bi-directional many-to-many association to Church
+    @ManyToMany
+    @JoinTable(name = "user_church", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
+            @JoinColumn(name = "church_id") })
+    private List<Church> churches;
+
+    // bi-directional many-to-one association to UserChurchApplication
+    @OneToMany(mappedBy = "user")
+    private List<UserChurchApplication> applications;
+
     public User() {
+    }
+
+    public UserChurchApplication addApplication(final UserChurchApplication application) {
+        getApplications().add(application);
+        application.setUser(this);
+
+        return application;
     }
 
     public SignOff addSignOff(final SignOff signOff) {
@@ -79,12 +91,16 @@ public class User extends AbstractAuditableEntity implements Serializable {
         return this.admin;
     }
 
+    public List<UserChurchApplication> getApplications() {
+        return this.applications;
+    }
+
     public String getCellphone() {
         return this.cellphone;
     }
 
-    public Church getChurch() {
-        return this.church;
+    public List<Church> getChurches() {
+        return this.churches;
     }
 
     public Long getId() {
@@ -119,6 +135,13 @@ public class User extends AbstractAuditableEntity implements Serializable {
         return this.wechat;
     }
 
+    public UserChurchApplication removeApplication(final UserChurchApplication application) {
+        getApplications().remove(application);
+        application.setUser(null);
+
+        return application;
+    }
+
     public SignOff removeSignOff(final SignOff signOff) {
         getSignOffs().remove(signOff);
         signOff.setUser(null);
@@ -130,12 +153,16 @@ public class User extends AbstractAuditableEntity implements Serializable {
         this.admin = admin;
     }
 
+    public void setApplications(final List<UserChurchApplication> applications) {
+        this.applications = applications;
+    }
+
     public void setCellphone(final String cellphone) {
         this.cellphone = cellphone;
     }
 
-    public void setChurch(final Church church) {
-        this.church = church;
+    public void setChurches(final List<Church> churches) {
+        this.churches = churches;
     }
 
     public void setId(final Long id) {
@@ -169,5 +196,4 @@ public class User extends AbstractAuditableEntity implements Serializable {
     public void setWechat(final String wechat) {
         this.wechat = wechat;
     }
-
 }

@@ -2,3 +2,5 @@
 <link rel="bookmark" href="/static/images/icon/favicon.jpg" />
 
 <script src="/static/js/lib/angularjs/angular.min.js"></script>
+
+<#include "/base/macro.ftl"/>

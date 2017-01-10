@@ -14,7 +14,7 @@ public class UserDto extends AbstractBusinessDto {
 
     private String wechat;
 
-    private ChurchDto church;
+    private List<ChurchDto> churches;
 
     private List<PlanDto> plans;
 
@@ -30,8 +30,8 @@ public class UserDto extends AbstractBusinessDto {
         return cellphone;
     }
 
-    public ChurchDto getChurch() {
-        return church;
+    public List<ChurchDto> getChurches() {
+        return churches;
     }
 
     public String getNickName() {
@@ -62,8 +62,8 @@ public class UserDto extends AbstractBusinessDto {
         this.cellphone = cellphone;
     }
 
-    public void setChurch(final ChurchDto church) {
-        this.church = church;
+    public void setChurches(final List<ChurchDto> churches) {
+        this.churches = churches;
     }
 
     public void setNickName(final String nickName) {

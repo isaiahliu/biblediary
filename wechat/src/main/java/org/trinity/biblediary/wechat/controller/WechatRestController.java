@@ -36,110 +36,109 @@ import org.trinity.common.exception.factory.IExceptionFactory;
 @RestController
 @RequestMapping
 public class WechatRestController extends AbstractResourceWechatController {
-	private static Logger logger = LogManager.getLogger(WechatRestController.class);
+    private static Logger logger = LogManager.getLogger(WechatRestController.class);
 
-	@Autowired
-	private IExceptionFactory exceptionFactory;
+    @Autowired
+    private IExceptionFactory exceptionFactory;
 
-	@Autowired
-	private IWechatProcessController wechatProcessController;
+    @Autowired
+    private IWechatProcessController wechatProcessController;
 
-	@Autowired
-	private IUserProcessController userProcessController;
+    @Autowired
+    private IUserProcessController userProcessController;
 
-	@Autowired
-	private ILookupProcessController lookupProcessController;
+    @Autowired
+    private ILookupProcessController lookupProcessController;
 
-	@Autowired
-	private IChurchProcessController churchProcessController;
+    @Autowired
+    private IChurchProcessController churchProcessController;
 
-	@Autowired
-	private IPlanProcessController planProcessController;
+    @Autowired
+    private IPlanProcessController planProcessController;
 
-	@RequestMapping(value = "ajax/church", method = RequestMethod.GET)
-	public @ResponseBody ResponseEntity<ChurchResponse> ajaxChurches(final ChurchSearchingDto searchingDto) throws IException {
-		final ChurchResponse response = new ChurchResponse();
+    @RequestMapping(value = "ajax/church", method = RequestMethod.GET)
+    public @ResponseBody ResponseEntity<ChurchResponse> ajaxChurches(final ChurchSearchingDto searchingDto) throws IException {
+        final ChurchResponse response = new ChurchResponse();
 
-		response.addData(churchProcessController.getAll(searchingDto).getContent());
+        response.addData(churchProcessController.getAll(searchingDto).getContent());
 
-		return new ResponseEntity<>(response, HttpStatus.OK);
-	}
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
-	@RequestMapping(value = "ajax/plan/join/{entityId}", method = RequestMethod.POST)
-	public @ResponseBody ResponseEntity<DefaultResponse> ajaxJoinPlan(@PathVariable("entityId") final Long entityId) throws IException {
+    @RequestMapping(value = "ajax/plan/join/{entityId}", method = RequestMethod.POST)
+    public @ResponseBody ResponseEntity<DefaultResponse> ajaxJoinPlan(@PathVariable("entityId") final Long entityId) throws IException {
 
-		userProcessController.joinPlan(entityId);
+        userProcessController.joinPlan(entityId);
 
-		return new ResponseEntity<>(new DefaultResponse(), HttpStatus.OK);
-	}
+        return new ResponseEntity<>(new DefaultResponse(), HttpStatus.OK);
+    }
 
-	@RequestMapping(value = "ajax/user", method = RequestMethod.GET)
-	public @ResponseBody ResponseEntity<UserDto> ajaxMe(final UserSearchingDto searchingDto) throws IException {
-		final UserDto result = userProcessController.getMe(searchingDto);
-		return new ResponseEntity<>(result, HttpStatus.OK);
-	}
+    @RequestMapping(value = "ajax/user", method = RequestMethod.GET)
+    public @ResponseBody ResponseEntity<UserDto> ajaxMe(final UserSearchingDto searchingDto) throws IException {
+        final UserDto result = userProcessController.getMe(searchingDto);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 
-	@RequestMapping(value = "ajax/plan", method = RequestMethod.GET)
-	public @ResponseBody ResponseEntity<PlanResponse> ajaxPlans(final PlanSearchingDto searchingDto) throws IException {
-		final PlanResponse response = new PlanResponse();
+    @RequestMapping(value = "ajax/plan", method = RequestMethod.GET)
+    public @ResponseBody ResponseEntity<PlanResponse> ajaxPlans(final PlanSearchingDto searchingDto) throws IException {
+        final PlanResponse response = new PlanResponse();
 
-		response.addData(planProcessController.getAll(searchingDto).getContent());
+        response.addData(planProcessController.getAll(searchingDto).getContent());
 
-		return new ResponseEntity<>(response, HttpStatus.OK);
-	}
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
-	@RequestMapping(value = "ajax/user", method = RequestMethod.PUT)
-	public void ajaxUpdateMe(@RequestBody final UserDto request) throws IException {
-		final UserDto user = (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if (StringUtils.isEmpty(request.getNickName()) || StringUtils.isEmpty(request.getCellphone())) {
-			throw exceptionFactory.createException("Invalid Input");
-		}
+    @RequestMapping(value = "ajax/user", method = RequestMethod.PUT)
+    public void ajaxUpdateMe(@RequestBody final UserDto request) throws IException {
+        final UserDto user = (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (StringUtils.isEmpty(request.getNickName()) || StringUtils.isEmpty(request.getCellphone())) {
+            throw exceptionFactory.createException("Invalid Input");
+        }
 
-		final UserDto dto = new UserDto();
-		dto.setId(user.getId());
-		dto.setNickName(request.getNickName());
-		dto.setCellphone(request.getCellphone());
-		dto.setChurch(request.getChurch());
-		dto.setTimeZone(request.getTimeZone());
-		userProcessController.update(dto);
+        final UserDto dto = new UserDto();
+        dto.setId(user.getId());
+        dto.setNickName(request.getNickName());
+        dto.setCellphone(request.getCellphone());
+        dto.setTimeZone(request.getTimeZone());
+        userProcessController.update(dto);
 
-	}
+    }
 
-	@RequestMapping(value = "ajax/lookup/{type}", method = RequestMethod.GET)
-	public ResponseEntity<LookupResponse> getLookupsByType(@PathVariable("type") final String lookupType) throws IException {
-		final LookupResponse response = new LookupResponse();
+    @RequestMapping(value = "ajax/lookup/{type}", method = RequestMethod.GET)
+    public ResponseEntity<LookupResponse> getLookupsByType(@PathVariable("type") final String lookupType) throws IException {
+        final LookupResponse response = new LookupResponse();
 
-		response.getData().addAll(lookupProcessController.getLookupsByType(lookupType));
+        response.getData().addAll(lookupProcessController.getLookupsByType(lookupType));
 
-		return new ResponseEntity<>(response, HttpStatus.OK);
-	}
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
-	@RequestMapping(value = "/menu", method = RequestMethod.GET)
-	public String getMenu() throws IException {
-		final String menu = wechatProcessController.getMenu();
+    @RequestMapping(value = "/menu", method = RequestMethod.GET)
+    public String getMenu() throws IException {
+        final String menu = wechatProcessController.getMenu();
 
-		logger.debug(menu);
+        logger.debug(menu);
 
-		return menu;
-	}
+        return menu;
+    }
 
-	@RequestMapping(value = "", method = RequestMethod.POST, produces = "application/xml")
-	public @ResponseBody WechatMessageResponse processMessage(@RequestBody final WechatMessageRequest request) throws IException {
-		return wechatProcessController.processMessage(request);
-	}
+    @RequestMapping(value = "", method = RequestMethod.POST, produces = "application/xml")
+    public @ResponseBody WechatMessageResponse processMessage(@RequestBody final WechatMessageRequest request) throws IException {
+        return wechatProcessController.processMessage(request);
+    }
 
-	@RequestMapping(value = "/menu", method = RequestMethod.POST)
-	public void refreshMenu() throws IException {
-		wechatProcessController.createMenu();
-	}
+    @RequestMapping(value = "/menu", method = RequestMethod.POST)
+    public void refreshMenu() throws IException {
+        wechatProcessController.createMenu();
+    }
 
-	@RequestMapping(value = "/user", method = RequestMethod.GET)
-	public ModelAndView userPage() {
-		return createModelAndView("home");
-	}
+    @RequestMapping(value = "/user", method = RequestMethod.GET)
+    public ModelAndView userPage() {
+        return createModelAndView("home");
+    }
 
-	@RequestMapping(value = "", method = RequestMethod.GET)
-	public @ResponseBody String verify(final VerificationRequest request) throws IException {
-		return request.getEchostr();
-	}
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public @ResponseBody String verify(final VerificationRequest request) throws IException {
+        return request.getEchostr();
+    }
 }
